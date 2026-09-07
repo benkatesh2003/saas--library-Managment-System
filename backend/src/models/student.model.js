@@ -165,6 +165,14 @@ const studentSchema = new mongoose.Schema(
 studentSchema.index({ adminId: 1, isActive: 1 });
 studentSchema.index({ adminId: 1, studentId: 1 }, { unique: true });
 studentSchema.index({ adminId: 1, paymentStatus: 1 });
+studentSchema.index(
+  { adminId: 1, phone: 1 },
+  { unique: true, partialFilterExpression: { phone: { $type: 'string' }, isActive: true } }
+);
+studentSchema.index(
+  { adminId: 1, email: 1 },
+  { unique: true, partialFilterExpression: { email: { $type: 'string' }, isActive: true } }
+);
 
 // ---------------------------------------------------------------------------
 // Virtuals

@@ -17,6 +17,7 @@ const dashboardCtrl = require('../controllers/admin/dashboard.controller');
 router.post('/auth/register', validateRegister, handleValidationErrors, authCtrl.register);
 router.post('/auth/login', validateLogin, handleValidationErrors, authCtrl.login);
 router.post('/auth/google/login', authCtrl.googleLogin);
+router.post('/auth/google', authCtrl.googleLogin);
 router.get('/auth/profile', authenticate, isAdmin, authCtrl.getProfile);
 router.put('/auth/profile', authenticate, isAdmin, uploadSingle, authCtrl.updateProfile);
 

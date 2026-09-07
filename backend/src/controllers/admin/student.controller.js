@@ -30,6 +30,20 @@ exports.admitStudent = async (req, res) => {
     if (!name) return sendError(res, 400, 'Student name is required');
     if (!startDate || !endDate) return sendError(res, 400, 'Subscription startDate and endDate are required');
 
+    // ─── Duplicate Detection ────────────────────────
+    if (phone) {
+      const existingByPhone = await Student.findOne({ adminId, phone, isActive: true });
+      if (existingByPhone) {
+        return sendError(res, 409, `A student with this phone number already exists (${existingByPhone.studentId}: ${existingByPhone.name})`);
+      }
+    }
+    if (email) {
+      const existingByEmail = await Student.findOne({ adminId, email: email.toLowerCase(), isActive: true });
+      if (existingByEmail) {
+        return sendError(res, 409, `A student with this email already exists (${existingByEmail.studentId}: ${existingByEmail.name})`);
+      }
+    }
+
     // ─── Generate ID & Password ─────────────────────
     const studentIdStr = await generateStudentId(adminId);
     const password = crypto.randomBytes(4).toString('hex'); // 8-char temp password
@@ -47,6 +61,9 @@ exports.admitStudent = async (req, res) => {
     if (shiftId) {
       shift = await Shift.findOne({ _id: shiftId, adminId });
       if (!shift) return sendError(res, 404, 'Shift not found');
+      if (shift.maxStudents > 0 && shift.currentStudents >= shift.maxStudents) {
+        return sendError(res, 400, `Shift '${shift.name}' is full (${shift.currentStudents}/${shift.maxStudents} students)`);
+      }
       fees += shift.price || 0;
     }
 

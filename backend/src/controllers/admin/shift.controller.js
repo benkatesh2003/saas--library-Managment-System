@@ -9,10 +9,11 @@ const { sendSuccess, sendError } = require('../../utils/response');
 exports.createShift = async (req, res) => {
   try {
     const adminId = req.user.id;
-    const { name, startTime, endTime, price, description } = req.body;
+    const { name, startTime, endTime, price, description, maxStudents } = req.body;
     
     const shift = new Shift({
-      adminId, name, startTime, endTime, price, description
+      adminId, name, startTime, endTime, price, description,
+      ...(maxStudents !== undefined && { maxStudents })
     });
     
     await shift.save();

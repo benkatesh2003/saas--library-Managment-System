@@ -37,9 +37,12 @@ const verifyGoogleToken = (idToken) => {
 
           resolve({
             googleId: parsedData.sub,
+            sub: parsedData.sub,
             email: parsedData.email,
             name: parsedData.name,
             picture: parsedData.picture,
+            given_name: parsedData.given_name || parsedData.name?.split(' ')[0] || '',
+            family_name: parsedData.family_name || parsedData.name?.split(' ').slice(1).join(' ') || '',
           });
         } catch (error) {
           reject(new Error('Failed to parse Google token info response.'));

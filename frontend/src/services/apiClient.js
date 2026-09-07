@@ -85,7 +85,7 @@ export const api = {
       
 
       try {
-        const res = await fetch(`${BASE_URL}/admin/auth/google`, {
+        const res = await fetch(`${BASE_URL}/admin/auth/google/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token })

@@ -85,33 +85,58 @@ exports.login = async (req, res) => {
  */
 exports.googleLogin = async (req, res) => {
   try {
-    const { token } = req.body;
-    
-    const payload = await verifyGoogleToken(token);
-    if (!payload) {
-      return sendError(res, 401, 'Invalid Google token');
+    const token = req.body?.token || req.body?.credential;
+    if (!token) {
+      return sendError(res, 400, 'Google token is required');
     }
     
-    const { email, given_name, family_name, sub, picture } = payload;
+    let payload;
+    try {
+      payload = await verifyGoogleToken(token);
+    } catch (verifyErr) {
+      return sendError(res, 401, 'Google token verification failed', verifyErr.message);
+    }
+
+    if (!payload || !payload.email) {
+      return sendError(res, 401, 'Invalid Google token payload');
+    }
     
-    let admin = await Admin.findOne({ $or: [{ email }, { googleId: sub }] });
+    const { email, name, picture } = payload;
+    const googleId = payload.googleId || payload.sub;
+    const firstName = payload.given_name || (name ? name.split(' ')[0] : 'Admin');
+    const lastName = payload.family_name || (name ? name.split(' ').slice(1).join(' ') : '');
     
-    if (!admin) {
+    let admin = await Admin.findOne({ $or: [{ email: email.toLowerCase() }, { googleId }] });
+    
+    if (admin) {
+      // Link Google ID if not yet linked
+      if (!admin.googleId) {
+        admin.googleId = googleId;
+      }
+      admin.lastLogin = Date.now();
+      if (picture && (!admin.avatar || !admin.avatar.url)) {
+        admin.avatar = { url: picture, publicId: '' };
+      }
+      await admin.save({ validateBeforeSave: false });
+    } else {
+      // New Admin registering via Google
       const libraryId = await generateLibraryId();
+      const crypto = require('crypto');
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      const libraryName = `${firstName}'s Library`;
+      
       admin = new Admin({
-        firstName: given_name,
-        lastName: family_name,
-        email,
-        googleId: sub,
-        avatar: picture,
+        firstName,
+        lastName,
+        email: email.toLowerCase(),
+        password: randomPassword,
+        googleId,
+        libraryName,
+        avatar: { url: picture || '', publicId: '' },
         libraryId,
         isVerified: true
       });
       await admin.save();
-    } else {
-      admin.lastLogin = Date.now();
-      if (!admin.googleId) admin.googleId = sub;
-      await admin.save({ validateBeforeSave: false });
     }
     
     const jwtToken = generateToken({ id: admin._id, email: admin.email, role: 'admin' });
