@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { BookOpen, User, Lock, ArrowRight, ShieldCheck, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { isMockEnabled } from '../../services/apiClient';
 import { UnverifiedBadge, UnverifiedBanner } from '../../components/common/UnverifiedBadge';
 
 export function StudentLogin() {
-  const isLive = !isMockEnabled();
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -43,12 +41,6 @@ export function StudentLogin() {
     }
   };
 
-  const handleDemoFill = () => {
-    setStudentId('LS-2401');
-    setPassword('rahul@123');
-    setError('');
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between p-4 sm:p-6">
       {/* Top Bar */}
@@ -59,14 +51,10 @@ export function StudentLogin() {
           </div>
           <span className="text-base font-extrabold text-slate-900 tracking-tight">Library<span className="text-brand-600">Sathi</span></span>
         </Link>
-        {isLive ? (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Port 5000
-          </span>
-        ) : (
-          <UnverifiedBadge type="STUDENT_AUTH" size="xs" />
-        )}
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          Live API (Port 5000)
+        </span>
       </div>
 
       {/* Main Login Card */}
@@ -80,29 +68,13 @@ export function StudentLogin() {
           </p>
         </div>
 
-        {/* Demo / Live Helper */}
-        {!isLive ? (
-          <div className="bg-brand-50/70 p-3.5 rounded-2xl border border-brand-200 text-xs flex items-center justify-between gap-2">
-            <div>
-              <span className="font-bold text-brand-900 block">Mock Demo Account</span>
-              <span className="text-slate-500 text-[11px]">ID: LS-2401 • Pass: rahul@123</span>
-            </div>
-            <button
-              type="button"
-              onClick={handleDemoFill}
-              className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-xs"
-            >
-              Auto-Fill
-            </button>
-          </div>
-        ) : (
-          <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-200 text-xs">
-            <span className="font-bold text-emerald-900 block">Live Backend Mode</span>
-            <span className="text-emerald-700 text-[11px]">
-              Use your Student ID (e.g. STU-00001) and temporary password generated during admission.
-            </span>
-          </div>
-        )}
+        {/* Live Helper */}
+        <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-200 text-xs">
+          <span className="font-bold text-emerald-900 block">Live Backend Mode</span>
+          <span className="text-emerald-700 text-[11px]">
+            Use your Student ID (e.g. STU-00001) and temporary password generated during admission.
+          </span>
+        </div>
 
         {/* Error Alert */}
         {error && (
@@ -120,7 +92,7 @@ export function StudentLogin() {
               <input
                 required
                 type="text"
-                placeholder={isLive ? "e.g. STU-00001" : "e.g. LS-2401"}
+                placeholder="e.g. STU-00001"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
                 className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono"
@@ -172,7 +144,7 @@ export function StudentLogin() {
 
       {/* Footer info */}
       <div className="text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Library Sathi. {isLive ? 'Connected to live backend on port 5000' : 'Powered by Standalone Mock Architecture'}.
+        © {new Date().getFullYear()} Library Sathi. Connected to live backend on port 5000.
       </div>
     </div>
   );

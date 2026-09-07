@@ -13,12 +13,10 @@ import {
   RefreshCw,
   Info
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatTime } from '../../utils/formatters';
 
 export function ShiftsManagement() {
-  const isMock = isMockEnabled();
   const [shifts, setShifts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,16 +36,10 @@ export function ShiftsManagement() {
   const [maxStudents, setMaxStudents] = useState('30');
   const [isUnlimitedCapacity, setIsUnlimitedCapacity] = useState(false);
 
-  // Fetch shifts from live backend or mock store
+  // Fetch shifts from live backend
   const loadShifts = useCallback(async () => {
     setLoading(true);
     setError('');
-
-    if (isMock) {
-      setShifts(mockStore.getShifts());
-      setLoading(false);
-      return;
-    }
 
     try {
       const res = await api.shifts.getAll();
@@ -63,7 +55,7 @@ export function ShiftsManagement() {
     } finally {
       setLoading(false);
     }
-  }, [isMock]);
+  }, []);
 
   useEffect(() => {
     loadShifts();
@@ -222,9 +214,9 @@ export function ShiftsManagement() {
 
         <div className="flex items-center gap-2">
           {/* Mode Badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">
-            <span className={`w-2 h-2 rounded-full ${isMock ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-            <span>{isMock ? 'Mock Offline' : 'Live API (Port 5000)'}</span>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Live API (Port 5000)</span>
           </div>
 
           <button

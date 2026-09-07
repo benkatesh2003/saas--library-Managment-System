@@ -13,7 +13,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { mockStore } from '../../mock/mockStore';
 import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
 
 export function StudentLayout() {
@@ -21,10 +20,8 @@ export function StudentLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { studentUser, logoutStudent } = useAuth();
-  const admin = mockStore.getAdmin();
-
-  // Fallback to first student if not in state
-  const student = studentUser?.student || mockStore.getStudents()[0];
+  const student = studentUser?.student || null;
+  const admin = student?.adminId || {};
 
   const handleLogout = () => {
     logoutStudent();
@@ -63,7 +60,7 @@ export function StudentLayout() {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-extrabold text-slate-900 tracking-tight">Library<span className="text-brand-600">Sathi</span></span>
-              <span className="text-[10px] text-slate-500 font-medium">Student Portal • {admin.libraryName}</span>
+              <span className="text-[10px] text-slate-500 font-medium">Student Portal{admin?.libraryName ? ` • ${admin.libraryName}` : ''}</span>
             </div>
           </Link>
         </div>
@@ -84,8 +81,8 @@ export function StudentLayout() {
               {student?.name?.[0] || 'S'}
             </div>
             <div className="hidden md:block text-left">
-              <div className="text-xs font-bold text-slate-800 leading-tight">{student?.name || 'Rahul Kumar'}</div>
-              <div className="text-[10px] text-slate-500 font-mono">{student?.studentId || 'LS-2401'}</div>
+              <div className="text-xs font-bold text-slate-800 leading-tight">{student?.name || 'Student'}</div>
+              <div className="text-[10px] text-slate-500 font-mono">{student?.admissionNumber || student?.studentId || 'Member'}</div>
             </div>
 
             <button
@@ -119,10 +116,10 @@ export function StudentLayout() {
             <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-1">
               <div className="text-[11px] font-bold text-slate-500 uppercase">Assigned Space</div>
               <div className="text-sm font-extrabold text-slate-900">
-                Desk <span className="text-brand-600 font-mono">{student?.seatNumber || 'S-03'}</span>
+                Desk <span className="text-brand-600 font-mono">{student?.seat?.seatNumber || student?.seatNumber || '—'}</span>
               </div>
               <div className="text-xs text-slate-600 font-medium">
-                {student?.shiftName || 'Morning Shift'}
+                {student?.shift?.name || student?.shiftName || 'Standard Access'}
               </div>
             </div>
 

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { mockStore } from '../mock/mockStore';
-import { api, isMockEnabled } from '../services/apiClient';
+import { api } from '../services/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -31,7 +30,7 @@ function setSessionItem(key, val) {
 }
 
 export function AuthProvider({ children }) {
-  // Purge any legacy auto-authenticated mock sessions stored in localStorage
+  // Purge any legacy auto-authenticated sessions stored in localStorage
   useEffect(() => {
     try {
       localStorage.removeItem('ls_auth_admin');
@@ -62,40 +61,8 @@ export function AuthProvider({ children }) {
     setSessionItem(STORAGE_KEYS.SUPER_ADMIN, superAdminUser);
   }, [superAdminUser]);
 
-  // Auth actions for Admin
+  // Auth actions for Admin (Live Backend API)
   const loginAdmin = async ({ email, password }) => {
-    if (isMockEnabled()) {
-      const admin = mockStore.getAdmin();
-      const inputEmail = (email || '').trim().toLowerCase();
-      const inputPass = (password || '').trim();
-      const adminEmail = (admin.email || '').toLowerCase();
-
-      // Support standard demo credentials, google demo flow, or mock admin email
-      const isGoogleDemo = inputEmail === 'google.demo@apexlibrary.in';
-      const isValidMock =
-        (inputEmail === adminEmail || inputEmail === 'admin@apexlibrary.in') &&
-        inputPass === 'admin@123';
-
-      if (isGoogleDemo || isValidMock || (inputEmail && inputPass === 'admin@123')) {
-        const userObj = {
-          token: 'mock_jwt_admin_' + Date.now(),
-          admin: {
-            ...admin,
-            email: isGoogleDemo ? 'google.demo@apexlibrary.in' : (inputEmail || admin.email)
-          }
-        };
-        setAdminUser(userObj);
-        setSessionItem(STORAGE_KEYS.ADMIN, userObj);
-        return { success: true, user: userObj };
-      }
-
-      return {
-        success: false,
-        message: 'Invalid email or password. Use demo account: admin@apexlibrary.in / admin@123'
-      };
-    }
-
-    // Live Backend Integration
     try {
       const res = await api.auth.login({ email, password });
       if (res && res.success && res.data) {
@@ -120,20 +87,6 @@ export function AuthProvider({ children }) {
   };
 
   const registerAdmin = async (adminData) => {
-    if (isMockEnabled()) {
-      const admin = mockStore.updateAdmin(adminData);
-      const userObj = {
-        token: 'mock_jwt_admin_' + Date.now(),
-        admin: {
-          ...admin,
-          ...adminData
-        }
-      };
-      setAdminUser(userObj);
-      setSessionItem(STORAGE_KEYS.ADMIN, userObj);
-      return { success: true, user: userObj, message: 'Admin registered successfully (Mock Mode)' };
-    }
-
     try {
       const res = await api.auth.register(adminData);
       if (res && res.success && res.data) {
@@ -165,20 +118,6 @@ export function AuthProvider({ children }) {
   };
 
   const loginAdminWithGoogle = async (googleToken) => {
-    if (isMockEnabled()) {
-      const admin = mockStore.getAdmin();
-      const userObj = {
-        token: 'mock_jwt_admin_' + Date.now(),
-        admin: {
-          ...admin,
-          email: 'google.demo@apexlibrary.in'
-        }
-      };
-      setAdminUser(userObj);
-      setSessionItem(STORAGE_KEYS.ADMIN, userObj);
-      return { success: true, user: userObj };
-    }
-
     try {
       const res = await api.auth.googleLogin(googleToken);
       if (res && res.success && res.data) {
@@ -203,16 +142,6 @@ export function AuthProvider({ children }) {
   };
 
   const updateAdminProfile = async (data, file = null) => {
-    if (isMockEnabled()) {
-      const updated = mockStore.updateAdmin(data);
-      if (adminUser) {
-        const newUserObj = { ...adminUser, admin: { ...adminUser.admin, ...updated } };
-        setAdminUser(newUserObj);
-        setSessionItem(STORAGE_KEYS.ADMIN, newUserObj);
-      }
-      return { success: true, message: 'Profile updated (Mock Mode)', data: { admin: updated } };
-    }
-
     try {
       const res = await api.auth.updateProfile(data, file, adminUser?.token);
       if (res && res.success && res.data?.admin) {
@@ -237,11 +166,6 @@ export function AuthProvider({ children }) {
   };
 
   const refreshAdminProfile = useCallback(async () => {
-    if (isMockEnabled()) {
-      const admin = mockStore.getAdmin();
-      return { success: true, admin };
-    }
-
     const currentToken = adminUser?.token || getSessionItem(STORAGE_KEYS.ADMIN)?.token;
     if (!currentToken) {
       return { success: false, message: 'No active session' };
@@ -275,7 +199,7 @@ export function AuthProvider({ children }) {
     setSessionItem(STORAGE_KEYS.ADMIN, null);
   };
 
-  // Auth actions for Student
+  // Auth actions for Student (Live Backend API)
   const loginStudent = async (studentIdOrPhone, password) => {
     const idOrPhone = (studentIdOrPhone || '').trim();
     const inputPass = (password || '').trim();
@@ -284,40 +208,6 @@ export function AuthProvider({ children }) {
       return { success: false, message: 'Please enter your Student ID or Registered Mobile number.' };
     }
 
-    if (isMockEnabled()) {
-      const students = mockStore.getStudents();
-      const student = students.find(s =>
-        s.studentId?.toLowerCase() === idOrPhone.toLowerCase() ||
-        (s.phone && s.phone.toLowerCase().includes(idOrPhone.toLowerCase()))
-      );
-
-      if (!student) {
-        return {
-          success: false,
-          message: 'Student record not found. Use demo ID: LS-2401 (or phone 9811223344)'
-        };
-      }
-
-      const expectedPass = `${student.name.split(' ')[0].toLowerCase()}@123`;
-      if (
-        inputPass === expectedPass ||
-        inputPass === 'rahul@123' ||
-        inputPass === 'student123' ||
-        !inputPass
-      ) {
-        const userObj = { token: 'mock_jwt_student_' + Date.now(), student };
-        setStudentUser(userObj);
-        setSessionItem(STORAGE_KEYS.STUDENT, userObj);
-        return { success: true, user: userObj };
-      }
-
-      return {
-        success: false,
-        message: `Invalid password. Demo password for ${student.name} is "${expectedPass}"`
-      };
-    }
-
-    // Live Backend Integration
     try {
       const res = await api.studentPortal.login(idOrPhone, inputPass);
       if (res && res.success && res.data) {
@@ -342,11 +232,6 @@ export function AuthProvider({ children }) {
   };
 
   const refreshStudentProfile = useCallback(async () => {
-    if (isMockEnabled()) {
-      const student = studentUser?.student || mockStore.getStudents()[0];
-      return { success: true, student };
-    }
-
     const currentToken = studentUser?.token || getSessionItem(STORAGE_KEYS.STUDENT)?.token;
     if (!currentToken) {
       return { success: false, message: 'No active student session' };
@@ -381,30 +266,10 @@ export function AuthProvider({ children }) {
     setSessionItem(STORAGE_KEYS.STUDENT, null);
   };
 
-  // Auth actions for Super Admin
+  // Auth actions for Super Admin (Live Backend API)
   const loginSuperAdmin = async ({ email, password }) => {
     const inputEmail = (email || '').trim().toLowerCase();
     const inputPass = (password || '').trim();
-
-    if (isMockEnabled()) {
-      if (
-        (inputEmail === 'superadmin@librarysathi.in' || inputEmail === 'superadmin@apexlibrary.in') &&
-        inputPass === 'superadmin123'
-      ) {
-        const userObj = {
-          token: 'mock_jwt_superadmin_' + Date.now(),
-          user: { email: inputEmail, name: 'System Super Admin', role: 'super-admin' }
-        };
-        setSuperAdminUser(userObj);
-        setSessionItem(STORAGE_KEYS.SUPER_ADMIN, userObj);
-        return { success: true, user: userObj };
-      }
-
-      return {
-        success: false,
-        message: 'Invalid Super Admin credentials. (Hint: superadmin@librarysathi.in / superadmin123)'
-      };
-    }
 
     try {
       const res = await api.superAdmin.auth.login({ email: inputEmail, password: inputPass });
@@ -430,16 +295,6 @@ export function AuthProvider({ children }) {
   };
 
   const registerSuperAdmin = async (userData) => {
-    if (isMockEnabled()) {
-      const userObj = {
-        token: 'mock_jwt_superadmin_' + Date.now(),
-        user: { email: userData.email, name: userData.name, role: 'super-admin' }
-      };
-      setSuperAdminUser(userObj);
-      setSessionItem(STORAGE_KEYS.SUPER_ADMIN, userObj);
-      return { success: true, user: userObj, message: 'Super Admin registered successfully (Mock Mode)' };
-    }
-
     try {
       const res = await api.superAdmin.auth.register(userData);
       if (res && res.success && res.data) {
@@ -464,10 +319,6 @@ export function AuthProvider({ children }) {
   };
 
   const refreshSuperAdminProfile = useCallback(async () => {
-    if (isMockEnabled()) {
-      return { success: true, user: { email: 'superadmin@librarysathi.in', name: 'System Super Admin', role: 'super-admin' } };
-    }
-
     const currentToken = superAdminUser?.token || getSessionItem(STORAGE_KEYS.SUPER_ADMIN)?.token;
     if (!currentToken) {
       return { success: false, message: 'No active super admin session' };
@@ -519,8 +370,7 @@ export function AuthProvider({ children }) {
         loginSuperAdmin,
         registerSuperAdmin,
         refreshSuperAdminProfile,
-        logoutSuperAdmin,
-        isMockMode: isMockEnabled()
+        logoutSuperAdmin
       }}
     >
       {children}

@@ -1,11 +1,5 @@
-import { mockStore } from '../mock/mockStore';
-import { INITIAL_PLANS } from '../mock/mockData';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-
-export function isMockEnabled() {
-  return import.meta.env.VITE_USE_MOCK === 'true';
-}
 
 export function getStoredAdminToken() {
   try {
@@ -41,37 +35,13 @@ export function getStoredSuperAdminToken() {
 }
 
 /**
- * Standard backend response envelope
- */
-function mockResponse(data, message = "Success", status = 200) {
-  return Promise.resolve({
-    status,
-    data: {
-      success: true,
-      message,
-      data
-    }
-  });
-}
-
-/**
  * API Service Layer mirroring exact backend routes
  */
 export const api = {
   // ─── AUTH (ADMIN) ──────────────────────────────────
   auth: {
     async login(credentials) {
-      if (isMockEnabled()) {
-        const admin = mockStore.getAdmin();
-        return {
-          success: true,
-          message: "Login successful (Mock Mode)",
-          data: {
-            token: "mock_jwt_admin_token_" + Date.now(),
-            admin
-          }
-        };
-      }
+      
 
       try {
         const res = await fetch(`${BASE_URL}/admin/auth/login`, {
@@ -91,17 +61,7 @@ export const api = {
     },
 
     async register(data) {
-      if (isMockEnabled()) {
-        const admin = mockStore.updateAdmin(data);
-        return {
-          success: true,
-          message: "Admin registered successfully (Mock Mode)",
-          data: {
-            token: "mock_jwt_admin_token_" + Date.now(),
-            admin
-          }
-        };
-      }
+      
 
       try {
         const res = await fetch(`${BASE_URL}/admin/auth/register`, {
@@ -122,17 +82,7 @@ export const api = {
 
     async googleLogin(token) {
       // Endpoint is exactly POST /api/admin/auth/google as requested
-      if (isMockEnabled()) {
-        const admin = mockStore.getAdmin();
-        return {
-          success: true,
-          message: "Google login (Mock Mode) successful",
-          data: {
-            token: "mock_google_jwt_" + Date.now(),
-            admin
-          }
-        };
-      }
+      
 
       try {
         const res = await fetch(`${BASE_URL}/admin/auth/google`, {
@@ -152,13 +102,7 @@ export const api = {
     },
 
     async getProfile(token = null) {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Profile retrieved (Mock Mode)",
-          data: { admin: mockStore.getAdmin() }
-        };
-      }
+      
 
       const authToken = token || getStoredAdminToken();
       try {
@@ -182,14 +126,7 @@ export const api = {
     },
 
     async updateProfile(data, file = null, token = null) {
-      if (isMockEnabled()) {
-        const updated = mockStore.updateAdmin(data);
-        return {
-          success: true,
-          message: "Profile updated (Mock Mode)",
-          data: { admin: updated }
-        };
-      }
+      
 
       const authToken = token || getStoredAdminToken();
       try {
@@ -246,36 +183,7 @@ export const api = {
   // ─── STUDENTS ──────────────────────────────────────
   students: {
     async getAll(filters = {}) {
-      if (isMockEnabled()) {
-        let students = mockStore.getStudents();
-        if (filters.search) {
-          const q = filters.search.toLowerCase();
-          students = students.filter(s =>
-            s.name?.toLowerCase().includes(q) ||
-            s.email?.toLowerCase().includes(q) ||
-            s.studentId?.toLowerCase().includes(q) ||
-            s.phone?.includes(q)
-          );
-        }
-        if (filters.isActive !== undefined && filters.isActive !== 'all') {
-          students = students.filter(s => String(s.isActive) === String(filters.isActive));
-        }
-        if (filters.paymentStatus && filters.paymentStatus !== 'all') {
-          students = students.filter(s => s.paymentStatus === filters.paymentStatus);
-        }
-        return {
-          success: true,
-          message: "Students retrieved (Mock Mode)",
-          data: {
-            students,
-            pagination: {
-              total: students.length,
-              page: 1,
-              pages: 1
-            }
-          }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -307,14 +215,7 @@ export const api = {
     },
 
     async search(q) {
-      if (isMockEnabled()) {
-        const students = mockStore.searchStudents(q);
-        return {
-          success: true,
-          message: "Search results (Mock Mode)",
-          data: { students }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -336,14 +237,7 @@ export const api = {
     },
 
     async getById(id) {
-      if (isMockEnabled()) {
-        const student = mockStore.getStudents().find(s => s._id === id);
-        return {
-          success: !!student,
-          message: student ? "Student retrieved (Mock Mode)" : "Student not found",
-          data: { student }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -365,19 +259,7 @@ export const api = {
     },
 
     async admit(studentData, file = null) {
-      if (isMockEnabled()) {
-        const res = mockStore.admitStudent(studentData);
-        return {
-          success: true,
-          message: "Student admitted successfully (Mock Mode)",
-          data: {
-            student: res.student || res,
-            payment: res.payment || null,
-            invoice: res.invoice || null,
-            tempPassword: res.tempPassword || 'mock1234'
-          }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -422,14 +304,7 @@ export const api = {
     },
 
     async update(id, updates, file = null) {
-      if (isMockEnabled()) {
-        const updated = mockStore.updateStudent(id, updates);
-        return {
-          success: !!updated,
-          message: updated ? "Student updated (Mock Mode)" : "Student not found",
-          data: { student: updated }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -474,13 +349,7 @@ export const api = {
     },
 
     async delete(id) {
-      if (isMockEnabled()) {
-        mockStore.deleteStudent(id);
-        return {
-          success: true,
-          message: "Student deleted (Mock Mode)"
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -505,20 +374,7 @@ export const api = {
   // ─── SEATS ─────────────────────────────────────────
   seats: {
     async getAll(filters = {}) {
-      if (isMockEnabled()) {
-        let seats = mockStore.getSeats();
-        if (filters.status && filters.status !== 'all') {
-          seats = seats.filter(s => s.status === filters.status);
-        }
-        if (filters.floor && filters.floor !== 'all') {
-          seats = seats.filter(s => String(s.floor) === String(filters.floor));
-        }
-        return {
-          success: true,
-          message: "Seats retrieved (Mock Mode)",
-          data: { seats, total: seats.length }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -545,14 +401,7 @@ export const api = {
     },
 
     async getAvailable() {
-      if (isMockEnabled()) {
-        const seats = mockStore.getSeats().filter(s => s.status === 'available');
-        return {
-          success: true,
-          message: "Available seats retrieved (Mock Mode)",
-          data: { seats }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -574,14 +423,7 @@ export const api = {
     },
 
     async getById(id) {
-      if (isMockEnabled()) {
-        const seat = mockStore.getSeats().find(s => s._id === id);
-        return {
-          success: !!seat,
-          message: seat ? "Seat retrieved (Mock Mode)" : "Seat not found",
-          data: { seat }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -603,14 +445,7 @@ export const api = {
     },
 
     async create(seatData) {
-      if (isMockEnabled()) {
-        const seat = mockStore.createSeat(seatData);
-        return {
-          success: true,
-          message: "Seat created successfully (Mock Mode)",
-          data: { seat }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -651,14 +486,7 @@ export const api = {
         };
       }
 
-      if (isMockEnabled()) {
-        const created = mockStore.bulkCreateSeats(payload);
-        return {
-          success: true,
-          message: "Seats created successfully (Mock Mode)",
-          data: { seats: created, count: created.length }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -682,14 +510,7 @@ export const api = {
     },
 
     async update(id, updates) {
-      if (isMockEnabled()) {
-        const updated = mockStore.updateSeat(id, updates);
-        return {
-          success: !!updated,
-          message: updated ? "Seat updated successfully (Mock Mode)" : "Seat not found",
-          data: { seat: updated }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -713,10 +534,7 @@ export const api = {
     },
 
     async delete(id) {
-      if (isMockEnabled()) {
-        const res = mockStore.deleteSeat(id);
-        return res;
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -741,14 +559,7 @@ export const api = {
   // ─── SHIFTS ────────────────────────────────────────
   shifts: {
     async getAll() {
-      if (isMockEnabled()) {
-        const shifts = mockStore.getShifts();
-        return {
-          success: true,
-          message: "Shifts retrieved (Mock Mode)",
-          data: { shifts }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -770,14 +581,7 @@ export const api = {
     },
 
     async getById(id) {
-      if (isMockEnabled()) {
-        const shift = mockStore.getShifts().find(s => s._id === id);
-        return {
-          success: !!shift,
-          message: shift ? "Shift retrieved (Mock Mode)" : "Shift not found",
-          data: { shift }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -799,14 +603,7 @@ export const api = {
     },
 
     async create(shiftData) {
-      if (isMockEnabled()) {
-        const shift = mockStore.addShift(shiftData);
-        return {
-          success: true,
-          message: "Shift created (Mock Mode)",
-          data: { shift }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -830,14 +627,7 @@ export const api = {
     },
 
     async update(id, updates) {
-      if (isMockEnabled()) {
-        const shift = mockStore.updateShift(id, updates);
-        return {
-          success: true,
-          message: "Shift updated (Mock Mode)",
-          data: { shift }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -861,14 +651,7 @@ export const api = {
     },
 
     async toggle(id) {
-      if (isMockEnabled()) {
-        const shift = mockStore.toggleShift(id);
-        return {
-          success: true,
-          message: "Shift status toggled (Mock Mode)",
-          data: { shift }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -890,14 +673,7 @@ export const api = {
     },
 
     async delete(id) {
-      if (isMockEnabled()) {
-        mockStore.deleteShift(id);
-        return {
-          success: true,
-          message: "Shift deleted (Mock Mode)",
-          data: null
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -922,21 +698,7 @@ export const api = {
   // ─── LOCKERS ───────────────────────────────────────
   lockers: {
     async getAll(filters = {}) {
-      if (isMockEnabled()) {
-        let lockers = mockStore.getLockers();
-        if (filters.status && filters.status !== 'all') {
-          lockers = lockers.filter(l => l.status === filters.status);
-        }
-        if (filters.isOccupied !== undefined && filters.isOccupied !== 'all') {
-          const isOcc = filters.isOccupied === true || filters.isOccupied === 'true';
-          lockers = lockers.filter(l => l.isOccupied === isOcc || (l.status === 'occupied') === isOcc);
-        }
-        return {
-          success: true,
-          message: "Lockers retrieved (Mock Mode)",
-          data: { lockers }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -965,14 +727,7 @@ export const api = {
     },
 
     async getById(id) {
-      if (isMockEnabled()) {
-        const locker = mockStore.getLockers().find(l => l._id === id || l.id === id);
-        return {
-          success: !!locker,
-          message: locker ? "Locker retrieved (Mock Mode)" : "Locker not found",
-          data: { locker }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -994,14 +749,7 @@ export const api = {
     },
 
     async create(lockerData) {
-      if (isMockEnabled()) {
-        const locker = mockStore.createLocker(lockerData);
-        return {
-          success: true,
-          message: "Locker created (Mock Mode)",
-          data: { locker }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1030,14 +778,7 @@ export const api = {
     },
 
     async bulkCreate(payload) {
-      if (isMockEnabled()) {
-        const created = mockStore.bulkCreateLockers(payload);
-        return {
-          success: true,
-          message: `${created.length} lockers created successfully (Mock Mode)`,
-          data: { count: created.length }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1069,14 +810,7 @@ export const api = {
     },
 
     async update(id, updates) {
-      if (isMockEnabled()) {
-        const locker = mockStore.updateLocker(id, updates);
-        return {
-          success: !!locker,
-          message: locker ? "Locker updated (Mock Mode)" : "Locker not found",
-          data: { locker }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1105,10 +839,7 @@ export const api = {
     },
 
     async delete(id) {
-      if (isMockEnabled()) {
-        const res = mockStore.deleteLocker(id);
-        return res;
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1130,14 +861,7 @@ export const api = {
     },
 
     async assign(lockerId, studentId, studentName) {
-      if (isMockEnabled()) {
-        const locker = mockStore.assignLocker(lockerId, studentName || "Student");
-        return {
-          success: !!locker,
-          message: "Locker assigned successfully (Mock Mode)",
-          data: { locker }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1161,14 +885,7 @@ export const api = {
     },
 
     async release(lockerId) {
-      if (isMockEnabled()) {
-        const locker = mockStore.releaseLocker(lockerId);
-        return {
-          success: !!locker,
-          message: "Locker released successfully (Mock Mode)",
-          data: { locker }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1195,26 +912,7 @@ export const api = {
   // ─── BOOKS ─────────────────────────────────────────
   books: {
     async getAll(params = {}) {
-      if (isMockEnabled()) {
-        let books = mockStore.getBooks();
-        if (params.category && params.category !== 'all') {
-          books = books.filter(b => b.category === params.category);
-        }
-        if (params.search) {
-          const s = params.search.toLowerCase();
-          books = books.filter(b =>
-            b.title?.toLowerCase().includes(s) ||
-            b.author?.toLowerCase().includes(s) ||
-            b.isbn?.toLowerCase().includes(s) ||
-            b.ISBN?.toLowerCase().includes(s)
-          );
-        }
-        return {
-          success: true,
-          message: "Books retrieved (Mock Mode)",
-          data: { books, pagination: { total: books.length, page: 1, pages: 1 } }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1243,14 +941,7 @@ export const api = {
     },
 
     async getById(id) {
-      if (isMockEnabled()) {
-        const book = mockStore.getBooks().find(b => b._id === id || b.id === id);
-        return {
-          success: !!book,
-          message: book ? "Book retrieved (Mock Mode)" : "Book not found",
-          data: { book }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1272,14 +963,7 @@ export const api = {
     },
 
     async add(bookData, file = null) {
-      if (isMockEnabled()) {
-        const book = mockStore.addBook(bookData);
-        return {
-          success: true,
-          message: "Book added (Mock Mode)",
-          data: { book }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1324,14 +1008,7 @@ export const api = {
     },
 
     async update(id, updates, file = null) {
-      if (isMockEnabled()) {
-        const book = mockStore.updateBook(id, updates);
-        return {
-          success: !!book,
-          message: book ? "Book updated (Mock Mode)" : "Book not found",
-          data: { book }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1376,10 +1053,7 @@ export const api = {
     },
 
     async delete(id) {
-      if (isMockEnabled()) {
-        const res = mockStore.deleteBook(id);
-        return res;
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1401,14 +1075,7 @@ export const api = {
     },
 
     async issue(issueData) {
-      if (isMockEnabled()) {
-        const issue = mockStore.issueBook(issueData);
-        return {
-          success: true,
-          message: "Book issued (Mock Mode)",
-          data: { issue }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1432,14 +1099,7 @@ export const api = {
     },
 
     async returnBook(issueId, finePaid = 0) {
-      if (isMockEnabled()) {
-        const issue = mockStore.returnBook(issueId);
-        return {
-          success: true,
-          message: "Book returned (Mock Mode)",
-          data: { issue, fineAmount: finePaid }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1463,17 +1123,7 @@ export const api = {
     },
 
     async getIssues(params = {}) {
-      if (isMockEnabled()) {
-        let issues = mockStore.getBookIssues();
-        if (params.status && params.status !== 'all') {
-          issues = issues.filter(i => i.status === params.status);
-        }
-        return {
-          success: true,
-          message: "Book issues retrieved (Mock Mode)",
-          data: { issues }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1502,14 +1152,7 @@ export const api = {
   // ─── DASHBOARD ─────────────────────────────────────
   dashboard: {
     async getStats(token = null) {
-      if (isMockEnabled()) {
-        const stats = mockStore.getDashboardStats();
-        return {
-          success: true,
-          message: "Dashboard stats retrieved (Mock Mode)",
-          data: stats
-        };
-      }
+      
 
       const authToken = token || getStoredAdminToken();
       try {
@@ -1536,13 +1179,7 @@ export const api = {
   // ─── BILLING & PAYMENT (RAZORPAY) ───────────────────
   billing: {
     async getPlans() {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Plans retrieved (Mock Mode)",
-          data: { plans: INITIAL_PLANS }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1567,18 +1204,7 @@ export const api = {
     },
 
     async createOrder(data = {}) {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Mock order created",
-          data: {
-            orderId: "order_mock_" + Math.random().toString(36).substring(2, 10),
-            amount: 119900,
-            currency: "INR",
-            key: "rzp_test_mock_key_unverified"
-          }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1602,19 +1228,7 @@ export const api = {
     },
 
     async verifyPayment(paymentData = {}) {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Payment verified (Mock mode)",
-          data: {
-            subscription: {
-              id: "sub_mock_" + Date.now(),
-              status: "paid",
-              active: true
-            }
-          }
-        };
-      }
+      
 
       const token = getStoredAdminToken();
       try {
@@ -1640,26 +1254,11 @@ export const api = {
 
   payments: {
     createOrder(planId, billingCycle = 'monthly') {
-      if (isMockEnabled()) {
-        return mockResponse({
-          orderId: "order_mock_" + Math.random().toString(36).substring(2, 10),
-          amount: 119900,
-          currency: "INR",
-          key: "rzp_test_mock_key_unverified"
-        }, "Mock order created");
-      }
+      
       return api.billing.createOrder({ planId, billingCycle });
     },
     verifyPayment(payload) {
-      if (isMockEnabled()) {
-        return mockResponse({
-          subscription: {
-            id: "sub_mock_" + Date.now(),
-            status: "paid",
-            active: true
-          }
-        }, "Payment verified (Mock mode)");
-      }
+      
       return api.billing.verifyPayment(payload);
     }
   },
@@ -1667,20 +1266,7 @@ export const api = {
   // ─── STUDENT SELF-SERVICE PORTAL ───────────────────
   studentPortal: {
     async login(studentId, password) {
-      if (isMockEnabled()) {
-        const student = mockStore.getStudents().find(s =>
-          s.studentId?.toLowerCase() === studentId?.toLowerCase() ||
-          (s.phone && s.phone.includes(studentId))
-        ) || mockStore.getStudents()[0];
-        return {
-          success: true,
-          message: "Student login successful (Mock Mode)",
-          data: {
-            token: "mock_student_jwt_" + Date.now(),
-            student
-          }
-        };
-      }
+      
 
       try {
         const res = await fetch(`${BASE_URL}/student/login`, {
@@ -1700,14 +1286,7 @@ export const api = {
     },
 
     async getProfile(token = null) {
-      if (isMockEnabled()) {
-        const student = mockStore.getStudents()[0];
-        return {
-          success: true,
-          message: "Student profile retrieved (Mock Mode)",
-          data: student
-        };
-      }
+      
 
       const authToken = token || getStoredStudentToken();
       try {
@@ -1731,38 +1310,7 @@ export const api = {
     },
 
     async getInvoices(params = {}, token = null) {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Invoices retrieved (Mock Mode)",
-          data: {
-            invoices: [
-              {
-                _id: "inv_101",
-                invoiceNumber: "INV-048123",
-                issueDate: "2026-08-01",
-                totalPayable: 1800,
-                amountPaidNow: 1800,
-                status: "paid",
-                period: "01 Aug 2026 - 01 Nov 2026 (3 Months)"
-              },
-              {
-                _id: "inv_102",
-                invoiceNumber: "INV-048991",
-                issueDate: "2026-05-01",
-                totalPayable: 1800,
-                amountPaidNow: 1800,
-                status: "paid",
-                period: "01 May 2026 - 01 Aug 2026 (3 Months)"
-              }
-            ],
-            total: 2,
-            page: 1,
-            limit: 10,
-            totalPages: 1
-          }
-        };
-      }
+      
 
       const authToken = token || getStoredStudentToken();
       try {
@@ -1792,19 +1340,7 @@ export const api = {
     },
 
     async getPayments(params = {}, token = null) {
-      if (isMockEnabled()) {
-        return {
-          success: true,
-          message: "Payment history retrieved (Mock Mode)",
-          data: {
-            payments: [],
-            total: 0,
-            page: 1,
-            limit: 10,
-            totalPages: 0
-          }
-        };
-      }
+      
 
       const authToken = token || getStoredStudentToken();
       try {
@@ -1838,27 +1374,7 @@ export const api = {
   superAdmin: {
     auth: {
       async login(credentials) {
-        if (isMockEnabled()) {
-          const inputEmail = (credentials.email || '').trim().toLowerCase();
-          const inputPass = (credentials.password || '').trim();
-          if (
-            (inputEmail === 'superadmin@librarysathi.in' || inputEmail === 'superadmin@apexlibrary.in') &&
-            inputPass === 'superadmin123'
-          ) {
-            return {
-              success: true,
-              message: "Login successful (Mock Mode)",
-              data: {
-                token: "mock_jwt_superadmin_" + Date.now(),
-                user: { email: inputEmail, name: "System Super Admin", role: "super-admin" }
-              }
-            };
-          }
-          return {
-            success: false,
-            message: "Invalid Super Admin credentials. (Hint: superadmin@librarysathi.in / superadmin123)"
-          };
-        }
+        
 
         try {
           const res = await fetch(`${BASE_URL}/super-admin/auth/login`, {
@@ -1878,16 +1394,7 @@ export const api = {
       },
 
       async register(userData) {
-        if (isMockEnabled()) {
-          return {
-            success: true,
-            message: "Super Admin registered successfully (Mock Mode)",
-            data: {
-              token: "mock_jwt_superadmin_" + Date.now(),
-              user: { email: userData.email, name: userData.name, role: "super-admin" }
-            }
-          };
-        }
+        
 
         try {
           const res = await fetch(`${BASE_URL}/super-admin/auth/register`, {
@@ -1907,15 +1414,7 @@ export const api = {
       },
 
       async getProfile(token = null) {
-        if (isMockEnabled()) {
-          return {
-            success: true,
-            message: "Profile fetched successfully (Mock Mode)",
-            data: {
-              user: { email: "superadmin@librarysathi.in", name: "System Super Admin", role: "super-admin" }
-            }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -1939,23 +1438,7 @@ export const api = {
 
     features: {
       async getAll(params = {}, token = null) {
-        if (isMockEnabled()) {
-          let feats = mockStore.getFeatures();
-          if (params.type && params.type !== 'all') {
-            feats = feats.filter(f => f.type === params.type);
-          }
-          if (params.isActive !== undefined) {
-            feats = feats.filter(f => f.isActive === (params.isActive === 'true' || params.isActive === true));
-          }
-          return {
-            success: true,
-            message: "Features fetched successfully (Mock Mode)",
-            data: {
-              features: feats,
-              pagination: { total: feats.length, page: 1, limit: feats.length, pages: 1 }
-            }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -1985,12 +1468,7 @@ export const api = {
       },
 
       async getById(id, token = null) {
-        if (isMockEnabled()) {
-          const feats = mockStore.getFeatures();
-          const feat = feats.find(f => f._id === id);
-          if (!feat) return { success: false, message: "Feature not found" };
-          return { success: true, message: "Feature fetched successfully", data: { feature: feat } };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2007,14 +1485,7 @@ export const api = {
       },
 
       async create(featureData, file = null, token = null) {
-        if (isMockEnabled()) {
-          const created = mockStore.addFeature(featureData);
-          return {
-            success: true,
-            message: "Feature created successfully (Mock Mode)",
-            data: { feature: created }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2049,15 +1520,7 @@ export const api = {
       },
 
       async update(id, updates, file = null, token = null) {
-        if (isMockEnabled()) {
-          const updated = mockStore.updateFeature(id, updates);
-          if (!updated) return { success: false, message: "Feature not found" };
-          return {
-            success: true,
-            message: "Feature updated successfully (Mock Mode)",
-            data: { feature: updated }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2092,10 +1555,7 @@ export const api = {
       },
 
       async delete(id, token = null) {
-        if (isMockEnabled()) {
-          mockStore.deleteFeature(id);
-          return { success: true, message: "Feature deleted successfully (Mock Mode)" };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2112,15 +1572,7 @@ export const api = {
       },
 
       async toggle(id, token = null) {
-        if (isMockEnabled()) {
-          const feat = mockStore.toggleFeature(id);
-          if (!feat) return { success: false, message: "Feature not found" };
-          return {
-            success: true,
-            message: "Feature status updated successfully (Mock Mode)",
-            data: { feature: feat }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2139,20 +1591,7 @@ export const api = {
 
     plans: {
       async getAll(params = {}, token = null) {
-        if (isMockEnabled()) {
-          let plans = mockStore.getPlans();
-          if (params.isActive !== undefined) {
-            plans = plans.filter(p => p.isActive === (params.isActive === 'true' || params.isActive === true));
-          }
-          return {
-            success: true,
-            message: "Plans fetched successfully (Mock Mode)",
-            data: {
-              plans,
-              pagination: { total: plans.length, page: 1, limit: plans.length, pages: 1 }
-            }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2176,12 +1615,7 @@ export const api = {
       },
 
       async getById(id, token = null) {
-        if (isMockEnabled()) {
-          const plans = mockStore.getPlans();
-          const plan = plans.find(p => p._id === id);
-          if (!plan) return { success: false, message: "Plan not found" };
-          return { success: true, message: "Plan fetched successfully", data: { plan } };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2198,14 +1632,7 @@ export const api = {
       },
 
       async create(planData, token = null) {
-        if (isMockEnabled()) {
-          const created = mockStore.createPlan(planData);
-          return {
-            success: true,
-            message: "Plan created successfully (Mock Mode)",
-            data: { plan: created }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2223,15 +1650,7 @@ export const api = {
       },
 
       async update(id, updates, token = null) {
-        if (isMockEnabled()) {
-          const updated = mockStore.updatePlan(id, updates);
-          if (!updated) return { success: false, message: "Plan not found" };
-          return {
-            success: true,
-            message: "Plan updated successfully (Mock Mode)",
-            data: { plan: updated }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2249,10 +1668,7 @@ export const api = {
       },
 
       async delete(id, token = null) {
-        if (isMockEnabled()) {
-          mockStore.deletePlan(id);
-          return { success: true, message: "Plan deleted successfully (Mock Mode)" };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2269,20 +1685,7 @@ export const api = {
       },
 
       async toggle(id, token = null) {
-        if (isMockEnabled()) {
-          const plans = mockStore.getPlans();
-          const plan = plans.find(p => p._id === id);
-          if (plan) {
-            plan.isActive = !plan.isActive;
-            mockStore.updatePlan(id, { isActive: plan.isActive });
-            return {
-              success: true,
-              message: "Plan status updated successfully (Mock Mode)",
-              data: { plan }
-            };
-          }
-          return { success: false, message: "Plan not found" };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2301,20 +1704,7 @@ export const api = {
 
     subscriptions: {
       async getAll(params = {}, token = null) {
-        if (isMockEnabled()) {
-          let subs = mockStore.getSubscriptions();
-          if (params.paymentStatus && params.paymentStatus !== 'all') {
-            subs = subs.filter(s => s.paymentStatus === params.paymentStatus);
-          }
-          return {
-            success: true,
-            message: "Subscriptions fetched successfully (Mock Mode)",
-            data: {
-              subscriptions: subs,
-              pagination: { total: subs.length, page: 1, limit: subs.length, pages: 1 }
-            }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2340,12 +1730,7 @@ export const api = {
       },
 
       async getById(id, token = null) {
-        if (isMockEnabled()) {
-          const subs = mockStore.getSubscriptions();
-          const sub = subs.find(s => s._id === id);
-          if (!sub) return { success: false, message: "Subscription not found" };
-          return { success: true, message: "Subscription fetched successfully", data: { subscription: sub } };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {
@@ -2362,15 +1747,7 @@ export const api = {
       },
 
       async updateStatus(id, paymentStatus, token = null) {
-        if (isMockEnabled()) {
-          const sub = mockStore.updateSubscriptionStatus(id, paymentStatus);
-          if (!sub) return { success: false, message: "Subscription not found" };
-          return {
-            success: true,
-            message: "Subscription status updated successfully (Mock Mode)",
-            data: { subscription: sub }
-          };
-        }
+        
 
         const authToken = token || getStoredSuperAdminToken();
         try {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
-import { INITIAL_FAQ } from '../../mock/mockData';
+import { LANDING_FAQ } from '../../data/landingContent';
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState(0);
@@ -21,7 +21,7 @@ export function FaqSection() {
         </div>
 
         <div className="space-y-3">
-          {INITIAL_FAQ.map((item, idx) => {
+          {LANDING_FAQ.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div

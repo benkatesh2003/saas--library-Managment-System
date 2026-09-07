@@ -3,12 +3,11 @@ import {
   KeyRound, CheckCircle2, User, Unlock, Lock, X, Plus, RefreshCw,
   AlertCircle, Trash2, Edit3, Layers, Info, Wrench, Search
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 
 export function LockersManagement() {
-  const [lockers, setLockers] = useState(isMockEnabled() ? mockStore.getLockers() : []);
-  const [students, setStudents] = useState(isMockEnabled() ? mockStore.getStudents() : []);
+  const [lockers, setLockers] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
@@ -41,9 +40,6 @@ export function LockersManagement() {
   const [editPrice, setEditPrice] = useState('200');
   const [editStatus, setEditStatus] = useState('available');
 
-  // Assign Student Name (Mock Mode fallback only)
-  const [selectedStudentName, setSelectedStudentName] = useState('');
-
   // Load live data from backend
   const loadData = async () => {
     setLoading(true);
@@ -54,9 +50,6 @@ export function LockersManagement() {
         setLockers(res.data?.lockers || []);
       } else {
         setError(res.message || 'Failed to retrieve lockers from backend');
-      }
-      if (isMockEnabled()) {
-        setStudents(mockStore.getStudents());
       }
     } catch (err) {
       setError(err.message || 'Network error connecting to backend');
@@ -198,24 +191,6 @@ export function LockersManagement() {
     }
   };
 
-  // Mock Assign (Offline Mock mode only)
-  const handleMockAssign = (e) => {
-    e.preventDefault();
-    if (!selectedLocker || !selectedStudentName.trim()) return;
-
-    mockStore.assignLocker(selectedLocker._id, selectedStudentName.trim());
-    setLockers(mockStore.getLockers());
-    setSelectedLocker(null);
-    setSelectedStudentName('');
-  };
-
-  // Mock Release (Offline Mock mode only)
-  const handleMockRelease = (lockerId) => {
-    mockStore.releaseLocker(lockerId);
-    setLockers(mockStore.getLockers());
-    setSelectedLocker(null);
-  };
-
   // Filtered Lockers List
   const filteredLockers = lockers.filter(l => {
     if (statusFilter !== 'all' && l.status !== statusFilter) return false;
@@ -240,13 +215,9 @@ export function LockersManagement() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Digital Locker Grid</h1>
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-              isMockEnabled()
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${isMockEnabled() ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-              {isMockEnabled() ? 'Mock Mode' : 'Live API (Port 5000)'}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Live API (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -317,18 +288,16 @@ export function LockersManagement() {
         </div>
       )}
 
-      {/* Live System Workflow Notice */}
-      {!isMockEnabled() && (
-        <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-blue-800">
-          <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold">Locker Allocation & Release Workflow:</span>
-            <span className="text-blue-700 ml-1">
-              In live backend mode, lockers are assigned directly during <strong>Student Admission</strong> and automatically released when a student is deactivated. Direct assignment/release buttons are intentionally unavailable per backend architecture.
-            </span>
-          </div>
+      {/* Locker Workflow Notice */}
+      <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-blue-800">
+        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold">Locker Allocation & Release Workflow:</span>
+          <span className="text-blue-700 ml-1">
+            In live backend mode, lockers are assigned directly during <strong>Student Admission</strong> and automatically released when a student is deactivated.
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Metrics & Filter Bar */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -517,46 +486,6 @@ export function LockersManagement() {
                 </div>
               )}
             </div>
-
-            {/* In Mock Mode: Allow Quick Mock Assign/Release */}
-            {isMockEnabled() ? (
-              (selectedLocker.status === 'occupied' || selectedLocker.isOccupied) ? (
-                <div className="space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => handleMockRelease(selectedLocker._id)}
-                    className="w-full py-2.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-colors"
-                  >
-                    Release / Vacate Locker (Mock)
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleMockAssign} className="space-y-3 pt-2">
-                  <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
-                      Assign to Student (Mock Mode)
-                    </label>
-                    <select
-                      value={selectedStudentName}
-                      onChange={(e) => setSelectedStudentName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    >
-                      <option value="">-- Select Student --</option>
-                      {students.map(s => (
-                        <option key={s._id} value={s.name}>{s.name} ({s.studentId})</option>
-                      ))}
-                    </select>
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={!selectedStudentName}
-                    className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 disabled:opacity-50 transition-colors"
-                  >
-                    Assign Locker (Mock)
-                  </button>
-                </form>
-              )
-            ) : null}
 
             {/* Actions: Edit & Delete */}
             <div className="flex items-center gap-2 pt-3 border-t border-slate-100 mt-3">

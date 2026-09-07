@@ -9,38 +9,38 @@ export const SUPPORT_PHONE = "+91 98765 43210";
 
 /**
  * UNVERIFIED INTEGRATIONS NOTICE
- * Explicitly marking integrations that are mocks or pending live backend verification.
+ * Explicitly marking integrations that require third-party service credentials.
  */
 export const UNVERIFIED_NOTICES = {
   RAZORPAY: {
-    title: "Unverified Integration: Razorpay",
-    badge: "Mock Payment Gateway",
-    description: "Online checkout and webhook verification are simulated locally. No real charges are processed.",
+    title: "Integration Notice: Razorpay Gateway",
+    badge: "Gateway Config",
+    description: "Online checkout order creation connects to backend. Real payment settlement requires merchant gateway key configuration.",
     type: "warning"
   },
   GOOGLE_OAUTH: {
-    title: "Unverified Integration: Google OAuth",
-    badge: "Mock OAuth Flow",
-    description: "Google Sign-In is simulated in frontend mock mode. Token verification requires production backend configuration.",
-    type: "warning"
+    title: "Integration Notice: Google OAuth",
+    badge: "OAuth Setup",
+    description: "Google Sign-In requires active Google Cloud OAuth Client ID configuration.",
+    type: "info"
   },
   WHATSAPP_SMS: {
-    title: "Unverified Integration: WhatsApp & SMS Alerts",
-    badge: "Upcoming Integration",
+    title: "Integration Notice: WhatsApp & SMS Alerts",
+    badge: "Gateway Setup",
     description: "Automated SMS/WhatsApp fee reminders and admission receipts require third-party SMS/WhatsApp gateway credentials.",
     type: "info"
   },
   QR_CODE: {
-    title: "Unverified Integration: Dynamic QR Generation",
-    badge: "Preview Feature",
-    description: "QR attendance and seat check-in generation is a client-side visual simulation pending hardware/scanner sync.",
+    title: "Integration Notice: Dynamic QR Generation",
+    badge: "Scanner Sync",
+    description: "QR attendance and seat check-in generation is visually enabled pending turnstile hardware sync.",
     type: "info"
   },
   STUDENT_AUTH: {
-    title: "Unverified Integration: Student Authentication",
-    badge: "Mock Auth Mode",
-    description: "Student portal login runs against local mock store. Requires production backend JWT sync when live.",
-    type: "warning"
+    title: "Integration Notice: Student Authentication",
+    badge: "Live Auth",
+    description: "Student portal login runs directly against live backend JWT authentication on port 5000.",
+    type: "info"
   }
 };
 

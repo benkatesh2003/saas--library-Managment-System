@@ -1,19 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Building2, Search, Plus, Check, X, ShieldAlert, Power, RefreshCw, Info, AlertCircle } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-
-const MOCK_TENANTS_INITIAL = [
-  { id: "LIB-DEL-042", name: "Apex Study Library", owner: "Vikram Sharma", phone: "9876543210", city: "Delhi", seats: 40, plan: "Growth (Gold)", status: "active", joined: "2024-01-15" },
-  { id: "LIB-PAT-108", name: "Lakshya Reading Hall", owner: "Sunita Choudhary", phone: "9811223344", city: "Patna", seats: 120, plan: "Elite (Platinum)", status: "active", joined: "2024-03-20" },
-  { id: "LIB-KOT-250", name: "Toppers Library", owner: "Kapil Verma", phone: "9822334455", city: "Kota", seats: 250, plan: "Elite (Platinum)", status: "active", joined: "2024-02-10" },
-  { id: "LIB-JAI-080", name: "Saraswati Reading Point", owner: "Ramesh Kulkarni", phone: "9833445566", city: "Jaipur", seats: 80, plan: "Starter (Silver)", status: "active", joined: "2024-04-05" },
-  { id: "LIB-VAR-060", name: "Kashi Scholars Lounge", owner: "Deepak Pandey", phone: "9844556677", city: "Varanasi", seats: 60, plan: "Growth (Gold)", status: "active", joined: "2024-05-12" },
-  { id: "LIB-LUK-110", name: "Awadh Study Center", owner: "Mohd Rizwan", phone: "9855667788", city: "Lucknow", seats: 110, plan: "Growth (Gold)", status: "suspended", joined: "2024-06-01" },
-];
+import { api } from '../../services/apiClient';
 
 export function SuperAdminTenants() {
-  const [tenants, setTenants] = useState(isMockEnabled() ? MOCK_TENANTS_INITIAL : []);
-  const [loading, setLoading] = useState(!isMockEnabled());
+  const [tenants, setTenants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -23,11 +14,6 @@ export function SuperAdminTenants() {
   const [newSeats, setNewSeats] = useState(50);
 
   const loadTenants = useCallback(async () => {
-    if (isMockEnabled()) {
-      setTenants(MOCK_TENANTS_INITIAL);
-      setLoading(false);
-      return;
-    }
 
     setLoading(true);
     setError('');
@@ -81,45 +67,14 @@ export function SuperAdminTenants() {
   }, [loadTenants]);
 
   const handleToggleStatus = (id) => {
-    if (isMockEnabled()) {
-      setTenants(tenants.map(t => {
-        if (t.id === id) {
-          return { ...t, status: t.status === 'active' ? 'suspended' : 'active' };
-        }
-        return t;
-      }));
-    } else {
-      alert('In Live Mode, tenant account status is determined by subscription payment status. Please manage status via the Subscriptions Log.');
-    }
+    alert('In Live Mode, tenant account status is determined by subscription payment status. Please manage status via the Subscriptions Log.');
   };
 
   const handleAddLibrary = (e) => {
     e.preventDefault();
     if (!newLibName.trim()) return;
-
-    if (isMockEnabled()) {
-      const newTenant = {
-        id: `LIB-${(newCity || 'IND').slice(0, 3).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`,
-        name: newLibName.trim(),
-        owner: newOwner.trim() || 'Admin User',
-        phone: '9876543210',
-        email: `${(newOwner || 'admin').toLowerCase().replace(/\s+/g, '')}@library.in`,
-        city: newCity.trim() || 'India',
-        seats: Number(newSeats),
-        plan: 'Starter (Silver)',
-        status: 'active',
-        joined: new Date().toISOString().split('T')[0]
-      };
-
-      setTenants([newTenant, ...tenants]);
-      setNewLibName('');
-      setNewOwner('');
-      setNewCity('');
-      setIsAddModalOpen(false);
-    } else {
-      alert('In Live Mode, tenant library accounts are established when a library Administrator registers via the Admin portal and purchases or activates a subscription. Direct tenant insertion is not an exposed backend endpoint.');
-      setIsAddModalOpen(false);
-    }
+    alert('Tenant library accounts are created when a library Administrator registers via the Admin portal and activates a subscription. Direct tenant record insertion is not supported by the backend.');
+    setIsAddModalOpen(false);
   };
 
   const filtered = tenants.filter(t =>
@@ -136,12 +91,8 @@ export function SuperAdminTenants() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-extrabold text-white tracking-tight">Onboarded Library Tenants</h1>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
-              isMockEnabled()
-                ? 'bg-amber-950/60 text-amber-400 border-amber-800'
-                : 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
-            }`}>
-              {isMockEnabled() ? 'Mock Store' : 'Live Subscriptions'}
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border bg-emerald-950/60 text-emerald-400 border-emerald-800">
+              Live Subscriptions (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -171,15 +122,13 @@ export function SuperAdminTenants() {
       </div>
 
       {/* Multi-tenancy Architecture Notice */}
-      {!isMockEnabled() && (
-        <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-800/60 flex items-start gap-3">
-          <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-          <div className="text-xs text-blue-200">
-            <span className="font-bold text-blue-100">Multi-Tenancy Architecture Notice: </span>
-            The Library Sathi backend manages tenants through library Admin subscriptions (<code className="font-mono text-[11px] bg-blue-900/40 px-1 py-0.5 rounded">/api/super-admin/subscription/all</code>). Each unique Admin account populated in subscription records represents an active study library tenant.
-          </div>
+      <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-800/60 flex items-start gap-3">
+        <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+        <div className="text-xs text-blue-200">
+          <span className="font-bold text-blue-100">Multi-Tenancy Architecture Notice: </span>
+          The Library Sathi backend manages tenants through library Admin subscriptions (<code className="font-mono text-[11px] bg-blue-900/40 px-1 py-0.5 rounded">/api/super-admin/subscription/all</code>). Each unique Admin account populated in subscription records represents an active study library tenant.
         </div>
-      )}
+      </div>
 
       {error && (
         <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">

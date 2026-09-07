@@ -17,7 +17,7 @@ export function AdminRegister() {
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { adminUser, registerAdmin, isMockMode } = useAuth();
+  const { adminUser, registerAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -112,9 +112,9 @@ export function AdminRegister() {
         {/* Mode Indicator & Quick Fill */}
         <div className="bg-brand-50/70 p-3 rounded-2xl border border-brand-200 text-xs flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${isMockMode ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-bold text-brand-900">
-              {isMockMode ? 'Mock Offline Mode' : 'Live API (Port 5000)'}
+              Live API (Port 5000)
             </span>
           </div>
           <button

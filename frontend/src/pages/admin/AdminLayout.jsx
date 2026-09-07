@@ -20,7 +20,6 @@ import {
   AlertTriangle,
   UserCog
 } from 'lucide-react';
-import { mockStore } from '../../mock/mockStore';
 import { useAuth } from '../../context/AuthContext';
 import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
 
@@ -28,8 +27,8 @@ export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { adminUser, logoutAdmin, isMockMode } = useAuth();
-  const admin = adminUser?.admin || mockStore.getAdmin();
+  const { adminUser, logoutAdmin } = useAuth();
+  const admin = adminUser?.admin || {};
 
   const handleLogout = () => {
     logoutAdmin();
@@ -123,9 +122,9 @@ export function AdminLayout() {
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800 bg-slate-950/60 space-y-2">
           <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
-            <span className="font-medium">Mode: {isMockMode ? 'Mock Offline' : 'Live Backend'}</span>
-            <span className={`${isMockMode ? 'text-amber-400' : 'text-emerald-400'} font-mono font-bold`}>
-              ● {isMockMode ? 'Mock' : 'Port 5000'}
+            <span className="font-medium">Mode: Live Backend</span>
+            <span className="text-emerald-400 font-mono font-bold">
+              ● Port 5000
             </span>
           </div>
 
@@ -168,7 +167,6 @@ export function AdminLayout() {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
-            <UnverifiedBadge type="RAZORPAY" size="xs" />
 
             <Link
               to="/admin/students?action=admit"

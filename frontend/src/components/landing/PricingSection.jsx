@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
-import { INITIAL_PLANS } from '../../mock/mockData';
+import { LANDING_PLANS } from '../../data/landingContent';
 import { formatINR } from '../../utils/formatters';
 import { UnverifiedBadge } from '../common/UnverifiedBadge';
 
@@ -50,7 +50,7 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
-          {INITIAL_PLANS.map((plan) => {
+          {LANDING_PLANS.map((plan) => {
             const price = isAnnual ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice;
             const billedText = isAnnual ? `Billed annually (${formatINR(plan.yearlyPrice)} / yr)` : 'Billed monthly';
 

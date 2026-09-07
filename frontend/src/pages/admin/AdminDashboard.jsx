@@ -16,20 +16,17 @@ import {
   Plus,
   RefreshCw
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
 import { UnverifiedBadge, UnverifiedBanner } from '../../components/common/UnverifiedBadge';
 
 export function AdminDashboard() {
-  const isLive = !isMockEnabled();
   const [stats, setStats] = useState(null);
   const [shifts, setShifts] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-  const [showNotice, setShowNotice] = useState(true);
 
   const fetchDashboardData = async (isManualRefresh = false) => {
     if (isManualRefresh) {
@@ -40,30 +37,24 @@ export function AdminDashboard() {
     setError(null);
 
     try {
-      if (isMockEnabled()) {
-        setStats(mockStore.getDashboardStats());
-        setShifts(mockStore.getShifts());
-        setStudents(mockStore.getStudents());
+      const [statsRes, shiftsRes, studentsRes] = await Promise.all([
+        api.dashboard.getStats(),
+        api.shifts.getAll(),
+        api.students.getAll({ limit: 100 })
+      ]);
+
+      if (statsRes.success) {
+        setStats(statsRes.data?.stats || statsRes.data || {});
       } else {
-        const [statsRes, shiftsRes, studentsRes] = await Promise.all([
-          api.dashboard.getStats(),
-          api.shifts.getAll(),
-          api.students.getAll({ limit: 100 })
-        ]);
+        setError(statsRes.message || 'Failed to load dashboard statistics');
+      }
 
-        if (statsRes.success) {
-          setStats(statsRes.data?.stats || statsRes.data || {});
-        } else {
-          setError(statsRes.message || 'Failed to load dashboard statistics');
-        }
+      if (shiftsRes.success) {
+        setShifts(shiftsRes.data?.shifts || []);
+      }
 
-        if (shiftsRes.success) {
-          setShifts(shiftsRes.data?.shifts || []);
-        }
-
-        if (studentsRes.success) {
-          setStudents(studentsRes.data?.students || []);
-        }
+      if (studentsRes.success) {
+        setStudents(studentsRes.data?.students || []);
       }
     } catch (err) {
       setError(`Network error connecting to backend: ${err.message}`);
@@ -119,14 +110,6 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Top Disclaimer Banner */}
-      {showNotice && (
-        <UnverifiedBanner
-          type="STUDENT_AUTH"
-          onDismiss={() => setShowNotice(false)}
-        />
-      )}
-
       {/* Error Alert Banner */}
       {error && (
         <div className="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl flex items-center justify-between text-sm">
@@ -146,20 +129,7 @@ export function AdminDashboard() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Library Operations Dashboard</h1>
-            {isLive ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Live API (Port 5000)
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                Mock Mode (Offline)
-              </span>
-            )}
-          </div>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Library Operations Dashboard</h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Real-time occupancy, multi-shift capacity, and fee collection overview.
           </p>
@@ -247,7 +217,7 @@ export function AdminDashboard() {
               {loading ? '...' : formatINR(revenueAmount)}
             </div>
             <div className="text-xs text-slate-500 mt-1 font-medium">
-              Authoritative backend collection
+              Collected fees this month
             </div>
           </div>
         </div>

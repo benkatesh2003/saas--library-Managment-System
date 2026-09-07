@@ -17,13 +17,12 @@ import {
   User,
   AlertTriangle
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 
 export function SeatsManagement() {
-  // Live / Mock state
-  const [shifts, setShifts] = useState(isMockEnabled() ? mockStore.getShifts() : []);
-  const [seats, setSeats] = useState(isMockEnabled() ? mockStore.getSeats() : []);
+  // Live state
+  const [shifts, setShifts] = useState([]);
+  const [seats, setSeats] = useState([]);
   const [selectedShiftId, setSelectedShiftId] = useState('');
   const [selectedFloor, setSelectedFloor] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -102,9 +101,7 @@ export function SeatsManagement() {
     if (selectedFloor !== 'all' && String(s.floor || 'Ground').toLowerCase() !== String(selectedFloor).toLowerCase()) {
       return false;
     }
-    const currentSeatStatus = isMockEnabled()
-      ? (s.status || s.shiftOccupancy?.[selectedShiftId] || 'available')
-      : (s.status || 'available');
+    const currentSeatStatus = s.status || 'available';
 
     if (selectedStatus !== 'all' && currentSeatStatus !== selectedStatus) {
       return false;
@@ -237,13 +234,9 @@ export function SeatsManagement() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Seat Matrix & Layout</h1>
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-              isMockEnabled()
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${isMockEnabled() ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-              {isMockEnabled() ? 'Mock Mode' : 'Live API (Port 5000)'}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Live API (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -439,9 +432,7 @@ export function SeatsManagement() {
         ) : (
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
             {filteredSeats.map((seat) => {
-              const status = isMockEnabled()
-                ? (seat.status || seat.shiftOccupancy?.[selectedShiftId] || 'available')
-                : (seat.status || 'available');
+              const status = seat.status || 'available';
               const isSelected = selectedSeat?._id === seat._id;
 
               let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100";

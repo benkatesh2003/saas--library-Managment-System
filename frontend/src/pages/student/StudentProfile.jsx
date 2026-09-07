@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { IdCard, QrCode, Phone, Mail, MapPin, Calendar, Clock, Armchair, KeyRound, Printer, ShieldCheck, User, RefreshCw, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatDate } from '../../utils/formatters';
 import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
 
 export function StudentProfile() {
-  const isLive = !isMockEnabled();
   const { studentUser, refreshStudentProfile } = useAuth();
-  const admin = mockStore.getAdmin();
 
   const [profile, setProfile] = useState(studentUser?.student || null);
   const [loading, setLoading] = useState(false);
@@ -22,16 +19,11 @@ export function StudentProfile() {
     setError(null);
 
     try {
-      if (isMockEnabled()) {
-        const s = studentUser?.student || mockStore.getStudents()[0];
-        setProfile(s);
-      } else {
-        const res = await api.studentPortal.getProfile();
-        if (res.success && res.data) {
-          setProfile(res.data);
-        } else if (!res.success) {
-          setError(res.message || 'Failed to fetch student profile');
-        }
+      const res = await api.studentPortal.getProfile();
+      if (res.success && res.data) {
+        setProfile(res.data);
+      } else if (!res.success) {
+        setError(res.message || 'Failed to fetch student profile');
       }
     } catch (err) {
       setError(`Network error loading profile: ${err.message}`);
@@ -45,7 +37,8 @@ export function StudentProfile() {
     fetchProfile();
   }, []);
 
-  const student = profile || studentUser?.student || (isMockEnabled() ? mockStore.getStudents()[0] : null);
+  const student = profile || studentUser?.student || null;
+  const admin = student?.adminId || {};
 
   const seatNumber = student?.seat?.seatNumber || student?.seatNumber || 'Unassigned';
   const shiftName = student?.shift?.shiftName || student?.shiftName || 'Unassigned';
@@ -69,17 +62,10 @@ export function StudentProfile() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Student Digital Pass & Profile</h1>
-            {isLive ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Live API (Port 5000)
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                Mock Mode (Offline)
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live API (Port 5000)
+            </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
             Your official digital access badge for entry, turnstile verification, and desk reservation.
@@ -150,7 +136,7 @@ export function StudentProfile() {
                 {student?.studentId || 'ID: N/A'}
               </span>
               <span className="text-[11px] text-slate-400 block mt-1">
-                {admin.libraryName}
+                {admin?.libraryName || 'Library Member'}
               </span>
             </div>
 
@@ -288,20 +274,20 @@ export function StudentProfile() {
           <div className="bg-slate-50 rounded-2xl border border-slate-200/80 p-5 text-xs space-y-2">
             <h4 className="font-bold text-slate-800">Need Help or Shift Rescheduling?</h4>
             <p className="text-slate-500 leading-relaxed">
-              Contact the front desk administrator of <strong>{admin.libraryName}</strong>:
+              Contact the front desk administrator of <strong>{admin?.libraryName || 'your library'}</strong>:
             </p>
             <div className="flex flex-wrap gap-4 pt-1 font-mono text-[11px] text-slate-600">
               <span className="flex items-center gap-1">
                 <Phone className="w-3.5 h-3.5 text-brand-600" />
-                <span>{admin.phone}</span>
+                <span>{admin?.phone || 'Contact Front Desk'}</span>
               </span>
               <span className="flex items-center gap-1">
                 <Mail className="w-3.5 h-3.5 text-brand-600" />
-                <span>{admin.email}</span>
+                <span>{admin?.email || 'admin@librarysathi.in'}</span>
               </span>
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-brand-600" />
-                <span>{admin.address}</span>
+                <span>{admin?.address || 'Library Campus'}</span>
               </span>
             </div>
           </div>

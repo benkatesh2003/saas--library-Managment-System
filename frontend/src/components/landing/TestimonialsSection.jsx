@@ -1,6 +1,6 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
-import { INITIAL_TESTIMONIALS } from '../../mock/mockData';
+import { LANDING_TESTIMONIALS } from '../../data/landingContent';
 
 export function TestimonialsSection() {
   return (
@@ -19,7 +19,7 @@ export function TestimonialsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {INITIAL_TESTIMONIALS.map((t, i) => (
+          {LANDING_TESTIMONIALS.map((t, i) => (
             <div
               key={i}
               className="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"

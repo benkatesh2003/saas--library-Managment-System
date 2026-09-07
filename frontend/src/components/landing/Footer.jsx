@@ -86,13 +86,13 @@ export function Footer() {
         </div>
 
         {/* Integration Status Notice */}
-        <div className="my-6 p-3 bg-slate-900/80 rounded-xl border border-amber-900/40 text-[11px] text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-amber-400 font-medium">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>Standalone Frontend Architecture Mode Active</span>
+        <div className="my-6 p-3 bg-slate-900/80 rounded-xl border border-emerald-900/40 text-[11px] text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-emerald-400 font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Connected to Live Backend API (Port 5000)</span>
           </div>
           <span className="text-slate-500 text-[10px]">
-            API routes strictly mirror backend endpoints (`/api/admin/*`, `/api/student/*`). Unverified integrations (Razorpay, OAuth, SMS) are safely mocked.
+            Express REST APIs on MongoDB Atlas (`/api/admin/*`, `/api/student/*`, `/api/super-admin/*`).
           </span>
         </div>
 

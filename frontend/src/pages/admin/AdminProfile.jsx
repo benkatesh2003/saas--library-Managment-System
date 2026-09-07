@@ -13,11 +13,10 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { mockStore } from '../../mock/mockStore';
 
 export function AdminProfile() {
-  const { adminUser, updateAdminProfile, refreshAdminProfile, isMockMode } = useAuth();
-  const currentAdmin = adminUser?.admin || mockStore.getAdmin();
+  const { adminUser, updateAdminProfile, refreshAdminProfile } = useAuth();
+  const currentAdmin = adminUser?.admin || {};
 
   const [formData, setFormData] = useState({
     firstName: currentAdmin.firstName || '',
@@ -149,9 +148,9 @@ export function AdminProfile() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">
-            <span className={`w-2 h-2 rounded-full ${isMockMode ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-            <span>{isMockMode ? 'Mock Mode' : 'Live API (Port 5000)'}</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Live API (Port 5000)</span>
           </div>
           <button
             type="button"

@@ -9,11 +9,11 @@ export function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { adminUser, loginAdmin, loginAdminWithGoogle, isMockMode } = useAuth();
+  const { adminUser, loginAdmin, loginAdminWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // If already authenticated, redirect to target or admin dashboard
+  // If already logged in, immediately redirect to admin dashboard
   useEffect(() => {
     if (adminUser) {
       const from = location.state?.from?.pathname || '/admin/dashboard';
@@ -28,29 +28,19 @@ export function AdminLogin() {
 
     try {
       const res = await loginAdmin({ email, password });
-      if (res && res.success) {
+      if (res.success) {
         const from = location.state?.from?.pathname || '/admin/dashboard';
         navigate(from, { replace: true });
       } else {
-        setError(res?.message || 'Invalid credentials. Please try again.');
+        setError(res.message || 'Invalid credentials');
       }
     } catch (err) {
-      setError(`Network error: ${err.message}`);
+      setError(`Login failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDemoFill = () => {
-    if (isMockMode) {
-      setEmail('admin@apexlibrary.in');
-      setPassword('admin@123');
-    } else {
-      setEmail('audit-admin@test.com');
-      setPassword('Audit123456');
-    }
-    setError('');
-  };
 
   const handleGoogleDemo = async () => {
     setError('');
@@ -92,31 +82,6 @@ export function AdminLogin() {
           </p>
         </div>
 
-        {/* Mode Indicator & Demo Fast Fill */}
-        <div className="bg-brand-50/70 p-3.5 rounded-2xl border border-brand-200 text-xs flex items-center justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="font-bold text-brand-900">
-                {isMockMode ? 'Mock Offline Demo' : 'Live Backend Account'}
-              </span>
-              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${isMockMode ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                {isMockMode ? 'Mock' : 'Live API'}
-              </span>
-            </div>
-            <span className="text-slate-500 text-[11px] font-mono">
-              {isMockMode ? 'admin@apexlibrary.in • admin@123' : 'audit-admin@test.com • Audit123456'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={handleDemoFill}
-            disabled={loading}
-            className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
-          >
-            Auto-Fill
-          </button>
-        </div>
-
         {/* Error Alert */}
         {error && (
           <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-start gap-2">
@@ -137,7 +102,7 @@ export function AdminLogin() {
                 required
                 type="email"
                 disabled={loading}
-                placeholder={isMockMode ? "admin@apexlibrary.in" : "audit-admin@test.com"}
+                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
@@ -215,7 +180,7 @@ export function AdminLogin() {
       </div>
 
       <div className="text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Library Sathi. Powered by Standalone Mock Architecture.
+        © {new Date().getFullYear()} Library Sathi. Connected to live backend on port 5000.
       </div>
     </div>
   );

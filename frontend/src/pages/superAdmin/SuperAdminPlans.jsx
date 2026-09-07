@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Layers, Plus, Edit2, Trash2, Check, X, Shield, Users, Armchair, DollarSign, RefreshCw, AlertCircle, CheckCircle2, Power, Sparkles } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR } from '../../utils/formatters';
 
 export function SuperAdminPlans() {
-  const [plans, setPlans] = useState(isMockEnabled() ? mockStore.getPlans() : []);
-  const [featuresList, setFeaturesList] = useState(isMockEnabled() ? mockStore.getFeatures() : []);
-  const [loading, setLoading] = useState(!isMockEnabled());
+  const [plans, setPlans] = useState([]);
+  const [featuresList, setFeaturesList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [actionError, setActionError] = useState('');
@@ -29,13 +28,6 @@ export function SuperAdminPlans() {
   });
 
   const loadData = useCallback(async () => {
-    if (isMockEnabled()) {
-      setPlans(mockStore.getPlans());
-      setFeaturesList(mockStore.getFeatures());
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError('');
     try {
@@ -137,58 +129,32 @@ export function SuperAdminPlans() {
     setActionLoading(true);
 
     try {
-      if (isMockEnabled()) {
-        const textFeatures = formData.featuresText
-          .split('\n')
-          .map(f => f.trim())
-          .filter(Boolean);
+      const payload = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        pricing: {
+          monthly: Number(formData.monthlyPrice),
+          yearly: Number(formData.yearlyPrice),
+          lifetime: Number(formData.lifetimePrice || 0)
+        },
+        maxSeats: Number(formData.maxSeats),
+        maxStudents: Number(formData.maxStudents),
+        features: formData.selectedFeatureIds.filter(Boolean)
+      };
 
-        const mockPayload = {
-          name: formData.name.trim(),
-          description: formData.description.trim(),
-          monthlyPrice: Number(formData.monthlyPrice),
-          yearlyPrice: Number(formData.yearlyPrice),
-          maxSeats: Number(formData.maxSeats),
-          maxStudents: Number(formData.maxStudents),
-          features: textFeatures
-        };
+      let res;
+      if (editingPlan) {
+        res = await api.superAdmin.plans.update(editingPlan._id, payload);
+      } else {
+        res = await api.superAdmin.plans.create(payload);
+      }
 
-        if (editingPlan) {
-          mockStore.updatePlan(editingPlan._id, mockPayload);
-        } else {
-          mockStore.createPlan(mockPayload);
-        }
+      if (res && res.success) {
         await loadData();
-        setActionSuccess(editingPlan ? 'Plan updated successfully!' : 'Plan created successfully!');
+        setActionSuccess(res.message || (editingPlan ? 'Plan updated!' : 'Plan created!'));
         setIsModalOpen(false);
       } else {
-        const payload = {
-          name: formData.name.trim(),
-          description: formData.description.trim(),
-          pricing: {
-            monthly: Number(formData.monthlyPrice),
-            yearly: Number(formData.yearlyPrice),
-            lifetime: Number(formData.lifetimePrice || 0)
-          },
-          maxSeats: Number(formData.maxSeats),
-          maxStudents: Number(formData.maxStudents),
-          features: formData.selectedFeatureIds.filter(Boolean)
-        };
-
-        let res;
-        if (editingPlan) {
-          res = await api.superAdmin.plans.update(editingPlan._id, payload);
-        } else {
-          res = await api.superAdmin.plans.create(payload);
-        }
-
-        if (res && res.success) {
-          await loadData();
-          setActionSuccess(res.message || (editingPlan ? 'Plan updated!' : 'Plan created!'));
-          setIsModalOpen(false);
-        } else {
-          setActionError(res?.message || res?.error || 'Failed to save subscription plan.');
-        }
+        setActionError(res?.message || res?.error || 'Failed to save subscription plan.');
       }
     } catch (err) {
       setActionError(`Network error: ${err.message}`);
@@ -240,12 +206,8 @@ export function SuperAdminPlans() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-extrabold text-white tracking-tight">SaaS Subscription Plans</h1>
-            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${
-              isMockEnabled()
-                ? 'bg-amber-950/60 text-amber-400 border-amber-800'
-                : 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
-            }`}>
-              {isMockEnabled() ? 'Offline Mock' : '● Live Atlas'}
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase bg-emerald-950/60 text-emerald-400 border-emerald-800">
+              ● Live Atlas (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -570,7 +532,7 @@ export function SuperAdminPlans() {
               </div>
 
               {/* Feature Selection from Live Catalog */}
-              {featuresList.length > 0 && !isMockEnabled() && (
+              {featuresList.length > 0 && (
                 <div>
                   <label className="text-xs font-bold text-slate-300 block mb-1.5">
                     Attach Feature Flags from Catalog
@@ -598,7 +560,7 @@ export function SuperAdminPlans() {
                 </div>
               )}
 
-              {/* Textarea for mock or custom feature notes */}
+              {/* Textarea for custom feature notes */}
               <div>
                 <label className="text-xs font-bold text-slate-300 block mb-1">
                   Features List (One per line)

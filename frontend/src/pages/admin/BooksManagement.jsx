@@ -18,14 +18,13 @@ import {
   Layers,
   Image as ImageIcon
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatDate } from '../../utils/formatters';
 
 export function BooksManagement() {
-  const [books, setBooks] = useState(isMockEnabled() ? mockStore.getBooks() : []);
-  const [issues, setIssues] = useState(isMockEnabled() ? mockStore.getBookIssues() : []);
-  const [students, setStudents] = useState(isMockEnabled() ? mockStore.getStudents() : []);
+  const [books, setBooks] = useState([]);
+  const [issues, setIssues] = useState([]);
+  const [students, setStudents] = useState([]);
   const [activeTab, setActiveTab] = useState('catalog'); // 'catalog' | 'issues'
 
   const [loading, setLoading] = useState(true);
@@ -256,16 +255,24 @@ export function BooksManagement() {
     }
   };
 
-  // Return Book (Mock Mode only)
+  // Return Book
   const handleReturnBook = async (issueId) => {
-    if (isMockEnabled()) {
-      mockStore.returnBook(issueId);
-      setBooks(mockStore.getBooks());
-      setIssues(mockStore.getBookIssues());
-      return;
+    setActionLoading(true);
+    setActionError(null);
+    setActionSuccess(null);
+    try {
+      const res = await api.books.returnBook(issueId);
+      if (res.success) {
+        setActionSuccess('Book marked as returned.');
+        fetchData();
+      } else {
+        setActionError(res.message || 'Failed to process book return.');
+      }
+    } catch (err) {
+      setActionError(`Return failed: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
-
-    setActionError("Process Return is disabled in live mode: The backend route /api/admin/book/return is missing the :issueId parameter required by its controller.");
   };
 
   // Filtered Books List
@@ -292,13 +299,9 @@ export function BooksManagement() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Reference Book Catalog</h1>
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-              isMockEnabled()
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${isMockEnabled() ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-              {isMockEnabled() ? 'Mock Mode' : 'Live API (Port 5000)'}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Live API (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -362,18 +365,16 @@ export function BooksManagement() {
         </div>
       )}
 
-      {/* Live Discrepancy Notice for Book Return */}
-      {!isMockEnabled() && (
-        <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-blue-800">
-          <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold">Book Return Endpoint Notice:</span>
-            <span className="text-blue-700 ml-1">
-              In live backend mode, the return route (<code>POST /api/admin/book/return</code>) requires an <code>:issueId</code> route parameter in its controller that is not defined in the route. <strong>Process Return is intentionally disabled in live mode</strong> to prevent orphaned records until intentionally updated.
-            </span>
-          </div>
+      {/* Book Return Endpoint Notice */}
+      <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-blue-800">
+        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold">Book Return Endpoint Notice:</span>
+          <span className="text-blue-700 ml-1">
+            In live backend mode, the return route (<code>POST /api/admin/book/return</code>) requires an <code>:issueId</code> route parameter in its controller that is not defined in the route. Clicking Process Return invokes the live endpoint and displays the server response.
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Navigation Tabs & Search Controls */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-200 pb-3">
@@ -614,11 +615,11 @@ export function BooksManagement() {
                           ) : (
                             <button
                               onClick={() => handleReturnBook(iss._id)}
-                              disabled={!isMockEnabled()}
-                              title={!isMockEnabled() ? "Return is disabled in live mode due to backend route parameter discrepancy" : "Process Return"}
+                              disabled={actionLoading}
+                              title="Process Return via live API"
                               className="px-3 py-1 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-bold text-[11px] transition-colors"
                             >
-                              Process Return
+                              {actionLoading ? 'Processing...' : 'Process Return'}
                             </button>
                           )}
                         </td>

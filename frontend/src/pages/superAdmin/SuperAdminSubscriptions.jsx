@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CreditCard, Search, CheckCircle2, Clock, XCircle, AlertCircle, Edit3, X, Filter, RefreshCw } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
 
 export function SuperAdminSubscriptions() {
-  const [subscriptions, setSubscriptions] = useState(isMockEnabled() ? mockStore.getSubscriptions() : []);
-  const [loading, setLoading] = useState(!isMockEnabled());
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [actionError, setActionError] = useState('');
@@ -18,12 +17,6 @@ export function SuperAdminSubscriptions() {
   const [newStatus, setNewStatus] = useState('paid');
 
   const loadSubscriptions = useCallback(async () => {
-    if (isMockEnabled()) {
-      setSubscriptions(mockStore.getSubscriptions());
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError('');
     try {
@@ -60,14 +53,6 @@ export function SuperAdminSubscriptions() {
     setActionLoading(true);
 
     try {
-      if (isMockEnabled()) {
-        mockStore.updateSubscriptionStatus(editingSub._id, newStatus);
-        setSubscriptions(mockStore.getSubscriptions());
-        setActionSuccess(`Status updated to "${newStatus}" (Mock Mode).`);
-        setEditingSub(null);
-        return;
-      }
-
       const res = await api.superAdmin.subscriptions.updateStatus(editingSub._id, newStatus);
       if (res && res.success) {
         await loadSubscriptions();
@@ -134,12 +119,8 @@ export function SuperAdminSubscriptions() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-extrabold text-white tracking-tight">SaaS Subscription Billing Logs</h1>
-            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${
-              isMockEnabled()
-                ? 'bg-amber-950/60 text-amber-400 border-amber-800'
-                : 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
-            }`}>
-              {isMockEnabled() ? 'Offline Mock' : '● Live Atlas'}
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase bg-emerald-950/60 text-emerald-400 border-emerald-800">
+              ● Live Atlas (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">

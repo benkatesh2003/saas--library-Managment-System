@@ -15,15 +15,13 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
-import { UnverifiedBadge, UnverifiedBanner } from '../../components/common/UnverifiedBadge';
+
 
 export function StudentDashboard() {
-  const isLive = !isMockEnabled();
   const { studentUser, refreshStudentProfile } = useAuth();
-  const admin = mockStore.getAdmin();
+  const admin = studentUser?.student?.adminId || {};
   const [profile, setProfile] = useState(studentUser?.student || null);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,26 +38,19 @@ export function StudentDashboard() {
     setError(null);
 
     try {
-      if (isMockEnabled()) {
-        const student = studentUser?.student || mockStore.getStudents()[0];
-        setProfile(student);
-        const invRes = await api.studentPortal.getInvoices();
-        setInvoices(invRes.data?.invoices || []);
-      } else {
-        const [profRes, invRes] = await Promise.all([
-          api.studentPortal.getProfile(),
-          api.studentPortal.getInvoices()
-        ]);
+      const [profRes, invRes] = await Promise.all([
+        api.studentPortal.getProfile(),
+        api.studentPortal.getInvoices()
+      ]);
 
-        if (profRes.success && profRes.data) {
-          setProfile(profRes.data);
-        } else if (!profRes.success) {
-          setError(profRes.message || 'Failed to load student profile');
-        }
+      if (profRes.success && profRes.data) {
+        setProfile(profRes.data);
+      } else if (!profRes.success) {
+        setError(profRes.message || 'Failed to load student profile');
+      }
 
-        if (invRes.success && invRes.data) {
-          setInvoices(invRes.data.invoices || []);
-        }
+      if (invRes.success && invRes.data) {
+        setInvoices(invRes.data.invoices || []);
       }
     } catch (err) {
       setError(`Network error loading portal data: ${err.message}`);
@@ -85,9 +76,6 @@ export function StudentDashboard() {
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Top Disclaimer Banner */}
-      {!isLive ? (
-        <UnverifiedBanner type="STUDENT_AUTH" />
-      ) : null}
 
       {/* Error Alert Banner */}
       {error && (
@@ -109,17 +97,6 @@ export function StudentDashboard() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Dashboard</span>
-          {isLive ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Live API (Port 5000)
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-              Mock Mode (Offline)
-            </span>
-          )}
         </div>
         <button
           onClick={() => fetchStudentData(true)}
@@ -260,7 +237,7 @@ export function StudentDashboard() {
             <Receipt className="w-8 h-8 text-slate-300 mx-auto mb-2" />
             <p className="text-xs font-semibold text-slate-600">No fee invoices or receipts found for this account.</p>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              {isLive ? "Invoices generated upon enrollment or renewal will appear here." : "No invoices recorded."}
+                            Invoices generated upon enrollment or renewal will appear here.
             </p>
           </div>
         ) : (

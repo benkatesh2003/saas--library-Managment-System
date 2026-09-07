@@ -24,17 +24,16 @@ import {
   Upload,
   UserCheck
 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
 import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
 
 export function StudentsManagement() {
   const [searchParams] = useSearchParams();
-  const [students, setStudents] = useState(isMockEnabled() ? mockStore.getStudents() : []);
-  const [shifts, setShifts] = useState(isMockEnabled() ? mockStore.getShifts() : []);
-  const [seats, setSeats] = useState(isMockEnabled() ? mockStore.getSeats() : []);
-  const [lockers, setLockers] = useState(isMockEnabled() ? mockStore.getLockers() : []);
+  const [students, setStudents] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [seats, setSeats] = useState([]);
+  const [lockers, setLockers] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,10 +71,11 @@ export function StudentsManagement() {
     setLoading(true);
     setError(null);
     try {
-      const [studentsRes, shiftsRes, seatsRes] = await Promise.all([
+      const [studentsRes, shiftsRes, seatsRes, lockersRes] = await Promise.all([
         api.students.getAll({ limit: 100 }),
         api.shifts.getAll(),
-        api.seats.getAvailable()
+        api.seats.getAvailable(),
+        api.lockers.getAll()
       ]);
 
       if (studentsRes.success) {
@@ -96,8 +96,8 @@ export function StudentsManagement() {
         setSeats(seatsRes.data?.seats || []);
       }
 
-      if (isMockEnabled()) {
-        setLockers(mockStore.getLockers());
+      if (lockersRes.success) {
+        setLockers(lockersRes.data?.lockers || []);
       }
     } catch (err) {
       setError(err.message || 'An unexpected error occurred loading data');
@@ -122,12 +122,7 @@ export function StudentsManagement() {
   const finalPayable = Math.max(0, totalBaseFee);
 
   // Available seats
-  const availableSeats = isMockEnabled()
-    ? seats.filter(s => {
-        const occ = s.shiftOccupancy?.[shiftId];
-        return (occ === 'available' || !occ) && (s.status !== 'occupied');
-      })
-    : seats.filter(s => s.status === 'available');
+  const availableSeats = seats.filter(s => s.status === 'available');
 
   // Available lockers
   const availableLockers = lockers.filter(l => l.status === 'available' || !l.isOccupied);
@@ -236,13 +231,9 @@ export function StudentsManagement() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Student Directory & Admissions</h1>
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-              isMockEnabled()
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${isMockEnabled() ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-              {isMockEnabled() ? 'Mock Mode' : 'Live API (Port 5000)'}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Live API (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">

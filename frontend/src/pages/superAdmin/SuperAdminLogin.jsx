@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Shield, Lock, Mail, ArrowRight, Sparkles, Terminal, AlertCircle, RefreshCw, UserPlus, LogIn, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { isMockEnabled } from '../../services/apiClient';
 
 export function SuperAdminLogin() {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -55,12 +54,6 @@ export function SuperAdminLogin() {
     }
   };
 
-  const handleDemoFill = () => {
-    setIsRegisterMode(false);
-    setEmail('superadmin@librarysathi.in');
-    setPassword('superadmin123');
-    setError('');
-  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between p-4 sm:p-6 relative overflow-hidden">
@@ -73,12 +66,8 @@ export function SuperAdminLogin() {
           <span>← Back to Website</span>
         </Link>
         <div className="flex items-center gap-2">
-          <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border ${
-            isMockEnabled()
-              ? 'text-amber-400 bg-amber-950/60 border-amber-800'
-              : 'text-emerald-400 bg-emerald-950/60 border-emerald-800'
-          }`}>
-            {isMockEnabled() ? 'Mock Mode' : '● Live API'}
+          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border text-emerald-400 bg-emerald-950/60 border-emerald-800">
+            ● Live API (Port 5000)
           </span>
           <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">
             Platform Root
@@ -122,22 +111,6 @@ export function SuperAdminLogin() {
           </button>
         </div>
 
-        {/* Demo Fast Fill */}
-        {!isRegisterMode && (
-          <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700/80 text-xs flex items-center justify-between gap-2">
-            <div>
-              <span className="font-bold text-brand-300 block">Super Admin Credentials</span>
-              <span className="text-slate-400 text-[11px] font-mono">superadmin@librarysathi.in • superadmin123</span>
-            </div>
-            <button
-              type="button"
-              onClick={handleDemoFill}
-              className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-xs"
-            >
-              Auto-Fill
-            </button>
-          </div>
-        )}
 
         {/* Error Alert */}
         {error && (

@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Receipt, Printer, CheckCircle2, Download, Search, FileText, X, RefreshCw, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
 
 export function StudentInvoices() {
-  const isLive = !isMockEnabled();
   const { studentUser } = useAuth();
-  const admin = mockStore.getAdmin();
-  const student = studentUser?.student || (isMockEnabled() ? mockStore.getStudents()[0] : null);
+  const admin = studentUser?.student?.adminId || {};
+  const student = studentUser?.student || null;
 
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,18 +22,11 @@ export function StudentInvoices() {
     setError(null);
 
     try {
-      if (isMockEnabled()) {
-        const res = await api.studentPortal.getInvoices();
-        if (res.success && res.data) {
-          setInvoices(res.data.invoices || []);
-        }
-      } else {
-        const res = await api.studentPortal.getInvoices();
-        if (res.success && res.data) {
-          setInvoices(res.data.invoices || []);
-        } else if (!res.success) {
-          setError(res.message || 'Failed to fetch invoices from server');
-        }
+      const res = await api.studentPortal.getInvoices();
+      if (res.success && res.data) {
+        setInvoices(res.data.invoices || []);
+      } else if (!res.success) {
+        setError(res.message || 'Failed to fetch invoices from server');
       }
     } catch (err) {
       setError(`Network error loading invoices: ${err.message}`);
@@ -62,20 +53,13 @@ export function StudentInvoices() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Fee Invoices & Receipts</h1>
-            {isLive ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Live API (Port 5000)
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                Mock Mode (Offline)
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live API (Port 5000)
+            </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            View official computerized payment receipts and billing history issued by {admin.libraryName}.
+            View official computerized payment receipts and billing history issued by {admin.libraryName || 'your library'}.
           </p>
         </div>
 
@@ -128,9 +112,7 @@ export function StudentInvoices() {
             <Receipt className="w-12 h-12 text-slate-300 mx-auto mb-3" />
             <h3 className="text-base font-bold text-slate-800">No Fee Invoices Found</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-              {isLive
-                ? "No billing records or computerized fee receipts have been issued for your student account yet."
-                : "No invoices match the selected filter criteria."}
+                            {`No billing records or computerized fee receipts have been issued for your student account yet.`}
             </p>
           </div>
         ) : (

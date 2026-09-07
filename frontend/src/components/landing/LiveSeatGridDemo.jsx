@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { LayoutGrid, Clock, User, CheckCircle, Info, Sparkles, Check } from 'lucide-react';
-import { INITIAL_SHIFTS, INITIAL_SEATS } from '../../mock/mockData';
+import { DEMO_SHIFTS, DEMO_SEATS } from '../../data/landingContent';
 
 export function LiveSeatGridDemo() {
-  const [selectedShiftId, setSelectedShiftId] = useState(INITIAL_SHIFTS[0]._id);
+  const [selectedShiftId, setSelectedShiftId] = useState(DEMO_SHIFTS[0]._id);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-  const currentShift = INITIAL_SHIFTS.find(s => s._id === selectedShiftId) || INITIAL_SHIFTS[0];
+  const currentShift = DEMO_SHIFTS.find(s => s._id === selectedShiftId) || DEMO_SHIFTS[0];
 
   // Compute live occupancy for selected shift
-  const occupiedCount = INITIAL_SEATS.filter(s => s.shiftOccupancy?.[selectedShiftId] === "occupied").length;
-  const reservedCount = INITIAL_SEATS.filter(s => s.shiftOccupancy?.[selectedShiftId] === "reserved").length;
-  const availableCount = INITIAL_SEATS.length - occupiedCount - reservedCount;
+  const occupiedCount = DEMO_SEATS.filter(s => s.shiftOccupancy?.[selectedShiftId] === "occupied").length;
+  const reservedCount = DEMO_SEATS.filter(s => s.shiftOccupancy?.[selectedShiftId] === "reserved").length;
+  const availableCount = DEMO_SEATS.length - occupiedCount - reservedCount;
 
   return (
     <section id="seat-demo" className="py-20 bg-white border-y border-slate-200/80">
@@ -30,7 +30,7 @@ export function LiveSeatGridDemo() {
 
         {/* Shift Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {INITIAL_SHIFTS.map((shift) => {
+          {DEMO_SHIFTS.map((shift) => {
             const isActive = shift._id === selectedShiftId;
             return (
               <button
@@ -88,7 +88,7 @@ export function LiveSeatGridDemo() {
             </div>
 
             <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 sm:gap-3">
-              {INITIAL_SEATS.map((seat) => {
+              {DEMO_SEATS.map((seat) => {
                 const status = seat.shiftOccupancy?.[selectedShiftId] || "available";
                 const isSelected = selectedSeat?._id === seat._id;
 

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Sliders, Plus, Search, Check, X, Shield, Edit2, Trash2, Power, Sparkles, Tag, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { api, isMockEnabled } from '../../services/apiClient';
-import { mockStore } from '../../mock/mockStore';
+import { api } from '../../services/apiClient';
 import { formatINR } from '../../utils/formatters';
 
 export function SuperAdminFeatures() {
-  const [features, setFeatures] = useState(isMockEnabled() ? mockStore.getFeatures() : []);
-  const [loading, setLoading] = useState(!isMockEnabled());
+  const [features, setFeatures] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [actionError, setActionError] = useState('');
@@ -27,12 +26,6 @@ export function SuperAdminFeatures() {
   });
 
   const loadFeatures = useCallback(async () => {
-    if (isMockEnabled()) {
-      setFeatures(mockStore.getFeatures());
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError('');
     try {
@@ -57,13 +50,6 @@ export function SuperAdminFeatures() {
     setActionError('');
     setActionSuccess('');
     try {
-      if (isMockEnabled()) {
-        mockStore.toggleFeature(feat._id);
-        setFeatures(mockStore.getFeatures());
-        setActionSuccess(`Feature "${feat.name}" status toggled.`);
-        return;
-      }
-
       const res = await api.superAdmin.features.toggle(feat._id);
       if (res && res.success) {
         await loadFeatures();
@@ -75,6 +61,7 @@ export function SuperAdminFeatures() {
       setActionError(`Network error toggling feature: ${err.message}`);
     }
   };
+
 
   const handleOpenCreate = () => {
     setEditingFeature(null);
@@ -124,35 +111,19 @@ export function SuperAdminFeatures() {
         }
       };
 
-      if (isMockEnabled()) {
-        const mockPayload = {
-          ...payload,
-          code: formData.code.toUpperCase().replace(/\s+/g, '_') || `FEAT_${Date.now()}`
-        };
+      let res;
+      if (editingFeature) {
+        res = await api.superAdmin.features.update(editingFeature._id, payload);
+      } else {
+        res = await api.superAdmin.features.create(payload);
+      }
 
-        if (editingFeature) {
-          mockStore.updateFeature(editingFeature._id, mockPayload);
-        } else {
-          mockStore.addFeature(mockPayload);
-        }
+      if (res && res.success) {
         await loadFeatures();
-        setActionSuccess(editingFeature ? 'Feature updated!' : 'Feature created!');
+        setActionSuccess(res.message || (editingFeature ? 'Feature updated!' : 'Feature created!'));
         setIsModalOpen(false);
       } else {
-        let res;
-        if (editingFeature) {
-          res = await api.superAdmin.features.update(editingFeature._id, payload);
-        } else {
-          res = await api.superAdmin.features.create(payload);
-        }
-
-        if (res && res.success) {
-          await loadFeatures();
-          setActionSuccess(res.message || (editingFeature ? 'Feature updated!' : 'Feature created!'));
-          setIsModalOpen(false);
-        } else {
-          setActionError(res?.message || res?.error || 'Failed to save feature.');
-        }
+        setActionError(res?.message || res?.error || 'Failed to save feature.');
       }
     } catch (err) {
       setActionError(`Network error: ${err.message}`);
@@ -169,13 +140,6 @@ export function SuperAdminFeatures() {
     setActionError('');
     setActionSuccess('');
     try {
-      if (isMockEnabled()) {
-        mockStore.deleteFeature(feat._id);
-        setFeatures(mockStore.getFeatures());
-        setActionSuccess(`Feature "${feat.name}" deleted.`);
-        return;
-      }
-
       const res = await api.superAdmin.features.delete(feat._id);
       if (res && res.success) {
         await loadFeatures();
@@ -204,12 +168,8 @@ export function SuperAdminFeatures() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-extrabold text-white tracking-tight">Feature Flags & Modules</h1>
-            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${
-              isMockEnabled()
-                ? 'bg-amber-950/60 text-amber-400 border-amber-800'
-                : 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
-            }`}>
-              {isMockEnabled() ? 'Offline Mock' : '● Live Atlas'}
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase bg-emerald-950/60 text-emerald-400 border-emerald-800">
+              ● Live Atlas (Port 5000)
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -455,31 +415,17 @@ export function SuperAdminFeatures() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {isMockEnabled() && (
-                  <div>
-                    <label className="text-xs font-bold text-slate-300 block mb-1">Feature Code</label>
-                    <input
-                      type="text"
-                      placeholder="FEAT_WHATSAPP"
-                      value={formData.code}
-                      onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                      className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                  </div>
-                )}
-                <div className={isMockEnabled() ? '' : 'col-span-2'}>
-                  <label className="text-xs font-bold text-slate-300 block mb-1">Module Type *</label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                    className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  >
-                    <option value="basic">Basic (Core Included)</option>
-                    <option value="premium">Premium Feature</option>
-                    <option value="addon">Add-On Module</option>
-                  </select>
-                </div>
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Module Type *</label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  <option value="basic">Basic (Core Included)</option>
+                  <option value="premium">Premium Feature</option>
+                  <option value="addon">Add-On Module</option>
+                </select>
               </div>
 
               <div>
