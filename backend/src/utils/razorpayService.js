@@ -67,8 +67,23 @@ const verifyPaymentSignature = (orderId, paymentId, signature) => {
   }
 };
 
+/**
+ * Fetches an order from Razorpay by orderId.
+ * @param {string} orderId
+ * @returns {Promise<Object>}
+ */
+const fetchOrder = async (orderId) => {
+  try {
+    const razorpay = createRazorpayInstance();
+    return await razorpay.orders.fetch(orderId);
+  } catch (error) {
+    throw new Error(`Razorpay fetch order failed: ${error.message}`);
+  }
+};
+
 module.exports = {
   createRazorpayInstance,
   createOrder,
+  fetchOrder,
   verifyPaymentSignature,
 };

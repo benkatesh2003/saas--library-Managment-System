@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Check, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
+import { Check, Sparkles, HelpCircle, ArrowRight, CreditCard } from 'lucide-react';
 import { LANDING_PLANS } from '../../data/landingContent';
 import { formatINR } from '../../utils/formatters';
-import { UnverifiedBadge } from '../common/UnverifiedBadge';
 
 export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -132,8 +131,11 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
 
-                  <div className="flex items-center justify-center gap-1.5 pt-1">
-                    <UnverifiedBadge type="RAZORPAY" size="xs" />
+                  <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] font-semibold">
+                    <CreditCard className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                    <span className={plan.isPopular ? 'text-slate-300' : 'text-slate-500'}>
+                      Razorpay Secured • UPI & Cards
+                    </span>
                   </div>
                 </div>
               </div>

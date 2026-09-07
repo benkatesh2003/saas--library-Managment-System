@@ -14,19 +14,24 @@ import {
   BookOpen,
   UserPlus,
   Plus,
-  RefreshCw
+  RefreshCw,
+  CreditCard,
+  Zap
 } from 'lucide-react';
 import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
-import { UnverifiedBadge, UnverifiedBanner } from '../../components/common/UnverifiedBadge';
+import { useRazorpay } from '../../hooks/useRazorpay';
 
 export function AdminDashboard() {
+  const { openCheckout } = useRazorpay();
   const [stats, setStats] = useState(null);
   const [shifts, setShifts] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
+  const [payingStudentId, setPayingStudentId] = useState(null);
+  const [paymentNotice, setPaymentNotice] = useState(null);
 
   const fetchDashboardData = async (isManualRefresh = false) => {
     if (isManualRefresh) {
@@ -67,6 +72,66 @@ export function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleCollectFee = async (student) => {
+    setPayingStudentId(student._id);
+    setPaymentNotice(null);
+
+    try {
+      const res = await api.studentPayments.createOrder({ studentId: student._id });
+      if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to initialize fee payment order');
+      }
+
+      const { orderId, amount, currency, key } = res.data;
+
+      openCheckout({
+        key,
+        orderId,
+        amount,
+        currency,
+        name: 'Library Sathi',
+        description: `Fee Collection for ${student.name} (${student.studentId})`,
+        prefill: {
+          name: student.name,
+          email: student.email || '',
+          contact: student.phone || '',
+        },
+        theme: { color: '#4f46e5' },
+        onSuccess: async (response) => {
+          try {
+            setPaymentNotice({ type: 'info', message: `Verifying fee payment for ${student.name}...` });
+            const verifyRes = await api.studentPayments.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyRes.success) {
+              setPaymentNotice({ type: 'success', message: `Fee payment received for ${student.name}! Status updated to Paid.` });
+              await fetchDashboardData(true);
+            } else {
+              setPaymentNotice({ type: 'error', message: verifyRes.message || 'Fee payment verification failed' });
+            }
+          } catch (verErr) {
+            setPaymentNotice({ type: 'error', message: `Verification error: ${verErr.message}` });
+          } finally {
+            setPayingStudentId(null);
+          }
+        },
+        onError: (err) => {
+          setPaymentNotice({ type: 'error', message: err.description || err.message || 'Payment cancelled or failed' });
+          setPayingStudentId(null);
+        },
+        onDismiss: () => {
+          setPayingStudentId(null);
+        },
+      });
+    } catch (err) {
+      setPaymentNotice({ type: 'error', message: err.message || 'Could not initiate Razorpay fee collection' });
+      setPayingStudentId(null);
+    }
+  };
 
   // Compute authoritative KPI statistics
   const currentStats = stats || {};
@@ -126,10 +191,48 @@ export function AdminDashboard() {
         </div>
       )}
 
+      {/* Payment Notice */}
+      {paymentNotice && (
+        <div
+          className={`p-4 rounded-2xl flex items-start gap-3 border text-xs leading-relaxed transition-all ${
+            paymentNotice.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : paymentNotice.type === 'info'
+              ? 'bg-blue-50 border-blue-200 text-blue-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
+          }`}
+        >
+          {paymentNotice.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          ) : paymentNotice.type === 'info' ? (
+            <RefreshCw className="w-4 h-4 text-blue-600 shrink-0 mt-0.5 animate-spin" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+          )}
+          <div className="flex-1">{paymentNotice.message}</div>
+          <button
+            onClick={() => setPaymentNotice(null)}
+            className="text-slate-400 hover:text-slate-600 text-xs font-bold"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Library Operations Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Library Operations Dashboard</h1>
+            <Link
+              to="/admin/billing"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition-colors shadow-2xs"
+              title="Manage Razorpay subscription"
+            >
+              <CreditCard className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Razorpay Active</span>
+            </Link>
+          </div>
           <p className="text-xs text-slate-500 mt-0.5">
             Real-time occupancy, multi-shift capacity, and fee collection overview.
           </p>
@@ -467,17 +570,28 @@ export function AdminDashboard() {
                         Seat {s.seat?.seatNumber || s.seatNumber || 'Unassigned'} • {s.phone || 'No phone'}
                       </div>
                     </div>
-                    <div className="text-right">
-                      {s.feeAmount !== undefined ? (
-                        <div className="font-mono font-bold text-rose-600 text-sm">
-                          {formatINR(s.feeAmount - (s.paidAmount || 0))}
-                        </div>
-                      ) : (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase bg-rose-100 text-rose-800">
-                          {s.paymentStatus}
-                        </span>
-                      )}
-                      <span className="text-[10px] font-semibold text-rose-700 block mt-0.5">Uncollected</span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="text-right">
+                        {s.feeAmount !== undefined ? (
+                          <div className="font-mono font-bold text-rose-600 text-sm">
+                            {formatINR(s.feeAmount - (s.paidAmount || 0))}
+                          </div>
+                        ) : (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase bg-rose-100 text-rose-800">
+                            {s.paymentStatus}
+                          </span>
+                        )}
+                        <span className="text-[10px] font-semibold text-rose-700 block mt-0.5">Uncollected</span>
+                      </div>
+                      <button
+                        onClick={() => handleCollectFee(s)}
+                        disabled={payingStudentId === s._id}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
+                        title="Collect fee via Razorpay"
+                      >
+                        <CreditCard className="w-3 h-3" />
+                        <span>{payingStudentId === s._id ? '...' : 'Pay'}</span>
+                      </button>
                     </div>
                   </div>
                 ))
@@ -486,10 +600,13 @@ export function AdminDashboard() {
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
-            <div className="flex items-center gap-1.5">
-              <UnverifiedBadge type="WHATSAPP_SMS" size="xs" />
-            </div>
-            <span className="text-[11px] text-slate-400">Manual Reminder Available</span>
+            <span className="text-[11px] text-indigo-700 font-semibold flex items-center gap-1">
+              <CreditCard className="w-3 h-3" />
+              Razorpay Online Gateway Enabled
+            </span>
+            <Link to="/admin/students?selectedStatusFilter=due" className="text-[11px] font-semibold text-brand-600 hover:underline">
+              View All Dues →
+            </Link>
           </div>
         </div>
       </div>

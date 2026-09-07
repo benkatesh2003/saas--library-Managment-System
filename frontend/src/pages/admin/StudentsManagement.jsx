@@ -26,10 +26,11 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
-import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
+import { useRazorpay } from '../../hooks/useRazorpay';
 
 export function StudentsManagement() {
   const [searchParams] = useSearchParams();
+  const { openCheckout } = useRazorpay();
   const [students, setStudents] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [seats, setSeats] = useState([]);
@@ -40,6 +41,7 @@ export function StudentsManagement() {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState(null);
   const [actionSuccess, setActionSuccess] = useState(null);
+  const [payingStudentId, setPayingStudentId] = useState(null);
 
   // Search & Filter
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,6 +65,7 @@ export function StudentsManagement() {
   const [duration, setDuration] = useState('1');
   const [discount, setDiscount] = useState('0');
   const [paymentStatus, setPaymentStatus] = useState('paid');
+  const [payWithRazorpayNow, setPayWithRazorpayNow] = useState(false);
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [photoFile, setPhotoFile] = useState(null);
 
@@ -72,30 +75,25 @@ export function StudentsManagement() {
     setError(null);
     try {
       const [studentsRes, shiftsRes, seatsRes, lockersRes] = await Promise.all([
-        api.students.getAll({ limit: 100 }),
+        api.students.getAll(),
         api.shifts.getAll(),
-        api.seats.getAvailable(),
+        api.seats.getAll(),
         api.lockers.getAll()
       ]);
 
       if (studentsRes.success) {
         setStudents(studentsRes.data?.students || []);
-      } else {
-        setError(studentsRes.message || 'Failed to load students');
       }
-
       if (shiftsRes.success) {
-        const loadedShifts = shiftsRes.data?.shifts || [];
-        setShifts(loadedShifts);
-        if (loadedShifts.length > 0 && !shiftId) {
-          setShiftId(loadedShifts[0]._id);
+        const liveShifts = shiftsRes.data?.shifts || [];
+        setShifts(liveShifts);
+        if (liveShifts.length > 0 && !shiftId) {
+          setShiftId(liveShifts[0]._id);
         }
       }
-
       if (seatsRes.success) {
         setSeats(seatsRes.data?.seats || []);
       }
-
       if (lockersRes.success) {
         setLockers(lockersRes.data?.lockers || []);
       }
@@ -147,7 +145,7 @@ export function StudentsManagement() {
       endDate: calculatedEndDate,
       duration: parseInt(duration, 10),
       discount: parseInt(discount || 0, 10),
-      paymentStatus
+      paymentStatus: payWithRazorpayNow ? 'due' : paymentStatus
     };
 
     try {
@@ -155,6 +153,9 @@ export function StudentsManagement() {
       if (res.success) {
         setAdmittedStudentResult(res.data);
         await loadData();
+        if (payWithRazorpayNow && res.data?.student) {
+          handleCollectFee(res.data.student);
+        }
       } else {
         setActionError(res.message || 'Failed to admit student');
       }
@@ -177,6 +178,67 @@ export function StudentsManagement() {
     setDiscount('0');
     setPhotoFile(null);
     setActionError(null);
+  };
+
+  const handleCollectFee = async (student) => {
+    setPayingStudentId(student._id);
+    setActionError(null);
+    setActionSuccess(null);
+
+    try {
+      const res = await api.studentPayments.createOrder({ studentId: student._id });
+      if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to initialize fee payment order');
+      }
+
+      const { orderId, amount, currency, key } = res.data;
+
+      openCheckout({
+        key,
+        orderId,
+        amount,
+        currency,
+        name: 'Library Sathi',
+        description: `Fee Collection for ${student.name} (${student.studentId})`,
+        prefill: {
+          name: student.name,
+          email: student.email || '',
+          contact: student.phone || '',
+        },
+        theme: { color: '#4f46e5' },
+        onSuccess: async (response) => {
+          try {
+            setActionSuccess(`Verifying fee payment for ${student.name}...`);
+            const verifyRes = await api.studentPayments.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyRes.success) {
+              setActionSuccess(`Fee payment received for ${student.name}! Status updated to Paid.`);
+              await loadData();
+            } else {
+              setActionError(verifyRes.message || 'Fee payment verification failed');
+            }
+          } catch (verErr) {
+            setActionError(`Verification error: ${verErr.message}`);
+          } finally {
+            setPayingStudentId(null);
+          }
+        },
+        onError: (err) => {
+          setActionError(err.description || err.message || 'Payment cancelled or failed');
+          setPayingStudentId(null);
+        },
+        onDismiss: () => {
+          setPayingStudentId(null);
+        },
+      });
+    } catch (err) {
+      setActionError(err.message || 'Could not initiate Razorpay fee collection');
+      setPayingStudentId(null);
+    }
   };
 
   const handleDeleteStudent = async (id) => {
@@ -231,10 +293,6 @@ export function StudentsManagement() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Student Directory & Admissions</h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live API (Port 5000)
-            </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Manage student enrollments, assign desks, issue fee receipts, and generate ID cards.
@@ -457,15 +515,28 @@ export function StudentsManagement() {
 
                       {/* Fee Status */}
                       <td className="py-3 px-4">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                          s.paymentStatus === 'paid'
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                            : s.paymentStatus === 'due'
-                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                            : 'bg-amber-100 text-amber-800 border border-amber-200'
-                        }`}>
-                          {s.paymentStatus || 'due'}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                            s.paymentStatus === 'paid'
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              : s.paymentStatus === 'due'
+                              ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                              : 'bg-amber-100 text-amber-800 border border-amber-200'
+                          }`}>
+                            {s.paymentStatus || 'due'}
+                          </span>
+                          {s.paymentStatus !== 'paid' && !isDeactivated && (
+                            <button
+                              onClick={() => handleCollectFee(s)}
+                              disabled={payingStudentId === s._id}
+                              title="Collect fee via Razorpay"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-bold transition-colors disabled:opacity-50 cursor-pointer shadow-2xs"
+                            >
+                              <CreditCard className="w-2.5 h-2.5" />
+                              <span>{payingStudentId === s._id ? '...' : 'Pay'}</span>
+                            </button>
+                          )}
+                        </div>
                       </td>
 
                       {/* Active Status */}
@@ -565,7 +636,16 @@ export function StudentsManagement() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 pt-2">
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                  {admittedStudentResult.student?.paymentStatus !== 'paid' && (
+                    <button
+                      onClick={() => handleCollectFee(admittedStudentResult.student)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center gap-1.5 shadow-sm cursor-pointer"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Pay Fee via Razorpay</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setSelectedStudentForIdCard(admittedStudentResult.student);
@@ -763,9 +843,12 @@ export function StudentsManagement() {
                       <button
                         key={st}
                         type="button"
-                        onClick={() => setPaymentStatus(st)}
+                        onClick={() => {
+                          setPaymentStatus(st);
+                          if (st === 'paid') setPayWithRazorpayNow(false);
+                        }}
                         className={`py-2 text-xs font-bold capitalize rounded-xl border transition-all ${
-                          paymentStatus === st
+                          paymentStatus === st && !payWithRazorpayNow
                             ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                             : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                         }`}
@@ -774,6 +857,17 @@ export function StudentsManagement() {
                       </button>
                     ))}
                   </div>
+
+                  <label className="mt-2.5 flex items-center gap-2.5 text-xs text-indigo-800 font-semibold cursor-pointer bg-indigo-50/90 hover:bg-indigo-100/70 p-2.5 rounded-xl border border-indigo-200 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={payWithRazorpayNow}
+                      onChange={(e) => setPayWithRazorpayNow(e.target.checked)}
+                      className="w-4 h-4 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <CreditCard className="w-4 h-4 text-indigo-600 shrink-0" />
+                    <span>Collect admission fee immediately via Razorpay Checkout (UPI / Cards / NetBanking)</span>
+                  </label>
                 </div>
 
                 {/* Actions */}

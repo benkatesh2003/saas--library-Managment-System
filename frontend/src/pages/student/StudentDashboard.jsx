@@ -12,15 +12,17 @@ import {
   Sparkles,
   IdCard,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  CreditCard
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/apiClient';
 import { formatINR, formatDate } from '../../utils/formatters';
-
+import { useRazorpay } from '../../hooks/useRazorpay';
 
 export function StudentDashboard() {
   const { studentUser, refreshStudentProfile } = useAuth();
+  const { openCheckout } = useRazorpay();
   const admin = studentUser?.student?.adminId || {};
   const [profile, setProfile] = useState(studentUser?.student || null);
   const [invoices, setInvoices] = useState([]);
@@ -28,6 +30,7 @@ export function StudentDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [payingOnline, setPayingOnline] = useState(false);
 
   const fetchStudentData = async (isManual = false) => {
     if (isManual) {
@@ -63,6 +66,55 @@ export function StudentDashboard() {
   useEffect(() => {
     fetchStudentData();
   }, []);
+
+  const handleStudentPayFee = async () => {
+    setPayingOnline(true);
+    try {
+      const res = await api.studentPayments.createOrder();
+      if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to initialize payment');
+      }
+      const { orderId, amount, currency, key } = res.data;
+      openCheckout({
+        key,
+        orderId,
+        amount,
+        currency,
+        name: admin.libraryName || 'Library Sathi',
+        description: `Library Fee Payment for ${student?.name}`,
+        prefill: {
+          name: student?.name || '',
+          email: student?.email || '',
+          phone: student?.phone || '',
+        },
+        theme: { color: '#4f46e5' },
+        onSuccess: async (response) => {
+          const verifyRes = await api.studentPayments.verifyPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+          if (verifyRes.success) {
+            alert('Fee payment successful! Your library access has been renewed.');
+            await fetchStudentData(true);
+          } else {
+            alert(verifyRes.message || 'Payment verification failed');
+          }
+          setPayingOnline(false);
+        },
+        onError: (err) => {
+          alert(err.description || err.message || 'Payment was cancelled');
+          setPayingOnline(false);
+        },
+        onDismiss: () => {
+          setPayingOnline(false);
+        },
+      });
+    } catch (err) {
+      alert(err.message || 'Could not launch payment gateway');
+      setPayingOnline(false);
+    }
+  };
 
   const student = profile || studentUser?.student;
   const seatNumber = student?.seat?.seatNumber || student?.seatNumber || 'Unassigned';
@@ -141,6 +193,37 @@ export function StudentDashboard() {
           <span className="text-[11px] text-brand-300 font-mono">{student?.phone ? `Mob: ${student.phone}` : 'Official Enrollment'}</span>
         </div>
       </div>
+
+      {/* Due Fee Alert & Razorpay Online Payment */}
+      {(student?.paymentStatus === 'due' || student?.paymentStatus === 'partial') && (
+        <div className="bg-amber-50 border border-amber-200 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-amber-900 flex items-center gap-2">
+                <span>Pending Library Fee Balance</span>
+                <span className="bg-amber-200 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                  {student.paymentStatus}
+                </span>
+              </div>
+              <p className="text-[11px] text-amber-700 mt-0.5">
+                Clear your monthly shift & seat fee securely online via Razorpay (UPI, Google Pay, Cards).
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleStudentPayFee}
+            disabled={payingOnline}
+            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 disabled:opacity-50 cursor-pointer self-stretch sm:self-auto justify-center"
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            <span>{payingOnline ? 'Opening Razorpay...' : 'Pay Fee Online with Razorpay'}</span>
+          </button>
+        </div>
+      )}
 
       {/* Quick Action Buttons */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

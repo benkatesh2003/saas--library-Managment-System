@@ -1254,12 +1254,66 @@ export const api = {
 
   payments: {
     createOrder(planId, billingCycle = 'monthly') {
-      
       return api.billing.createOrder({ planId, billingCycle });
     },
     verifyPayment(payload) {
-      
       return api.billing.verifyPayment(payload);
+    }
+  },
+
+  studentPayments: {
+    async createOrder(payload = {}) {
+      const adminToken = getStoredAdminToken();
+      const studentToken = getStoredStudentToken();
+      const token = adminToken || studentToken;
+      const endpoint = adminToken
+        ? `${BASE_URL}/admin/student-payment/create-order`
+        : `${BASE_URL}/student/payment/create-order`;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        return {
+          success: false,
+          message: `Network error creating student payment order: ${err.message}`,
+          error: err.message
+        };
+      }
+    },
+
+    async verifyPayment(paymentData = {}) {
+      const adminToken = getStoredAdminToken();
+      const studentToken = getStoredStudentToken();
+      const token = adminToken || studentToken;
+      const endpoint = adminToken
+        ? `${BASE_URL}/admin/student-payment/verify`
+        : `${BASE_URL}/student/payment/verify`;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(paymentData)
+        });
+        return await res.json();
+      } catch (err) {
+        return {
+          success: false,
+          message: `Network error verifying student payment: ${err.message}`,
+          error: err.message
+        };
+      }
     }
   },
 

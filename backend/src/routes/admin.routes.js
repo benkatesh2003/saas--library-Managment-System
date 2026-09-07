@@ -11,6 +11,8 @@ const shiftCtrl = require('../controllers/admin/shift.controller');
 const lockerCtrl = require('../controllers/admin/locker.controller');
 const bookCtrl = require('../controllers/admin/book.controller');
 const paymentCtrl = require('../controllers/admin/payment.controller');
+const studentPaymentCtrl = require('../controllers/admin/studentPayment.controller');
+const planCtrl = require('../controllers/superAdmin/plan.controller');
 const dashboardCtrl = require('../controllers/admin/dashboard.controller');
 
 // ─── Auth Routes ─────────────────────────────────────
@@ -66,9 +68,14 @@ router.post('/book/issue', authenticate, isAdmin, bookCtrl.issueBook);
 router.post('/book/return', authenticate, isAdmin, bookCtrl.returnBook);
 router.get('/book/issues', authenticate, isAdmin, bookCtrl.getBookIssues);
 
+// ─── Plan Catalog Route (Admin) ──────────────────────
+router.get('/plan/all', authenticate, isAdmin, planCtrl.getAllPlans);
+
 // ─── Payment Routes (Razorpay) ──────────────────────
 router.post('/payment/create-order', authenticate, isAdmin, paymentCtrl.createSubscriptionOrder);
 router.post('/payment/verify-payment', authenticate, isAdmin, paymentCtrl.verifySubscriptionPayment);
+router.post('/student-payment/create-order', authenticate, isAdmin, studentPaymentCtrl.createStudentPaymentOrder);
+router.post('/student-payment/verify', authenticate, isAdmin, studentPaymentCtrl.verifyStudentPayment);
 
 // ─── Dashboard ───────────────────────────────────────
 router.get('/dashboard/stats', authenticate, isAdmin, dashboardCtrl.getDashboardStats);
