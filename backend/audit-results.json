@@ -1,0 +1,542 @@
+[
+  {
+    "module": "Health",
+    "api": "Health Check",
+    "method": "GET",
+    "path": "/api/health",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Library Sathi API is running"
+  },
+  {
+    "module": "SA Auth",
+    "api": "Register",
+    "method": "POST",
+    "path": "/api/super-admin/auth/register",
+    "status": 201,
+    "pass": "✅",
+    "detail": "Registered + got token"
+  },
+  {
+    "module": "SA Auth",
+    "api": "Login",
+    "method": "POST",
+    "path": "/api/super-admin/auth/login",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Got token"
+  },
+  {
+    "module": "SA Auth",
+    "api": "Get Profile",
+    "method": "GET",
+    "path": "/api/super-admin/auth/profile",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Profile fetched successfully"
+  },
+  {
+    "module": "SA Auth",
+    "api": "Profile (no auth)",
+    "method": "GET",
+    "path": "/api/super-admin/auth/profile",
+    "status": 401,
+    "pass": "✅",
+    "detail": "Auth required: Authentication failed: Missing or invalid token"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Create",
+    "method": "POST",
+    "path": "/api/super-admin/feature/create",
+    "status": 201,
+    "pass": "✅",
+    "detail": "ID: 6a99d246885fed46e8d5dedb"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/super-admin/feature/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Get By ID",
+    "method": "GET",
+    "path": "/api/super-admin/feature/get/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Feature fetched successfully"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Update",
+    "method": "PUT",
+    "path": "/api/super-admin/feature/update/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Feature updated successfully"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Toggle Status",
+    "method": "PATCH",
+    "path": "/api/super-admin/feature/toggle/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Feature status updated successfully"
+  },
+  {
+    "module": "SA Feature",
+    "api": "Delete",
+    "method": "DELETE",
+    "path": "/api/super-admin/feature/delete/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Feature deleted successfully"
+  },
+  {
+    "module": "SA Plan",
+    "api": "Create",
+    "method": "POST",
+    "path": "/api/super-admin/plan/create",
+    "status": 500,
+    "pass": "❌",
+    "detail": "\"Plan validation failed: pricing: Plan pricing is required\""
+  },
+  {
+    "module": "SA Plan",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/super-admin/plan/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: N/A"
+  },
+  {
+    "module": "SA Sub",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/super-admin/subscription/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: N/A"
+  },
+  {
+    "module": "Admin Auth",
+    "api": "Register",
+    "method": "POST",
+    "path": "/api/admin/auth/register",
+    "status": 201,
+    "pass": "✅",
+    "detail": "Registered"
+  },
+  {
+    "module": "Admin Auth",
+    "api": "Login",
+    "method": "POST",
+    "path": "/api/admin/auth/login",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Got token"
+  },
+  {
+    "module": "Admin Auth",
+    "api": "Login (invalid)",
+    "method": "POST",
+    "path": "/api/admin/auth/login",
+    "status": 400,
+    "pass": "✅",
+    "detail": "Validation: Validation failed"
+  },
+  {
+    "module": "Admin Auth",
+    "api": "Get Profile",
+    "method": "GET",
+    "path": "/api/admin/auth/profile",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Profile retrieved"
+  },
+  {
+    "module": "Shift",
+    "api": "Create",
+    "method": "POST",
+    "path": "/api/admin/shift/create",
+    "status": 500,
+    "pass": "❌",
+    "detail": "\"Shift validation failed: price: Shift price is required\""
+  },
+  {
+    "module": "Shift",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/admin/shift/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: N/A"
+  },
+  {
+    "module": "Seat",
+    "api": "Create",
+    "method": "POST",
+    "path": "/api/admin/seat/create",
+    "status": 201,
+    "pass": "✅",
+    "detail": "ID: 6a99d248885fed46e8d5dee0"
+  },
+  {
+    "module": "Seat",
+    "api": "Bulk Create",
+    "method": "POST",
+    "path": "/api/admin/seat/bulk",
+    "status": 201,
+    "pass": "✅",
+    "detail": "0 seats created successfully"
+  },
+  {
+    "module": "Seat",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/admin/seat/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Seat",
+    "api": "Get Available",
+    "method": "GET",
+    "path": "/api/admin/seat/available",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Seat",
+    "api": "Get By ID",
+    "method": "GET",
+    "path": "/api/admin/seat/get/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Seat retrieved"
+  },
+  {
+    "module": "Seat",
+    "api": "Update",
+    "method": "PUT",
+    "path": "/api/admin/seat/update/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Seat updated"
+  },
+  {
+    "module": "Locker",
+    "api": "Create",
+    "method": "POST",
+    "path": "/api/admin/locker/create",
+    "status": 201,
+    "pass": "✅",
+    "detail": "ID: 6a99d248885fed46e8d5dee1"
+  },
+  {
+    "module": "Locker",
+    "api": "Bulk Create",
+    "method": "POST",
+    "path": "/api/admin/locker/bulk",
+    "status": 201,
+    "pass": "✅",
+    "detail": "0 lockers created successfully"
+  },
+  {
+    "module": "Locker",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/admin/locker/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Locker",
+    "api": "Get By ID",
+    "method": "GET",
+    "path": "/api/admin/locker/get/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Locker retrieved"
+  },
+  {
+    "module": "Locker",
+    "api": "Update",
+    "method": "PUT",
+    "path": "/api/admin/locker/update/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Locker updated"
+  },
+  {
+    "module": "Locker",
+    "api": "Assign",
+    "method": "POST",
+    "path": "/api/admin/locker/assign",
+    "status": 404,
+    "pass": "✅",
+    "detail": "Locker not found"
+  },
+  {
+    "module": "Locker",
+    "api": "Release",
+    "method": "POST",
+    "path": "/api/admin/locker/release",
+    "status": 404,
+    "pass": "✅",
+    "detail": "Locker not found"
+  },
+  {
+    "module": "Book",
+    "api": "Add Book",
+    "method": "POST",
+    "path": "/api/admin/book/add",
+    "status": 201,
+    "pass": "✅",
+    "detail": "ID: 6a99d248885fed46e8d5dee2"
+  },
+  {
+    "module": "Book",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/admin/book/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Book",
+    "api": "Get By ID",
+    "method": "GET",
+    "path": "/api/admin/book/get/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Book retrieved"
+  },
+  {
+    "module": "Book",
+    "api": "Update",
+    "method": "PUT",
+    "path": "/api/admin/book/update/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Book updated"
+  },
+  {
+    "module": "Book",
+    "api": "Issue Book",
+    "method": "POST",
+    "path": "/api/admin/book/issue",
+    "status": 404,
+    "pass": "✅",
+    "detail": "Student not found"
+  },
+  {
+    "module": "Book",
+    "api": "Get Issues",
+    "method": "GET",
+    "path": "/api/admin/book/issues",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Book issues retrieved"
+  },
+  {
+    "module": "Book",
+    "api": "Return Book",
+    "method": "POST",
+    "path": "/api/admin/book/return",
+    "status": 404,
+    "pass": "✅",
+    "detail": "Active book issue not found"
+  },
+  {
+    "module": "Student",
+    "api": "Admit",
+    "method": "POST",
+    "path": "/api/admin/student/admit",
+    "status": 201,
+    "pass": "✅",
+    "detail": "ID: STU-00001"
+  },
+  {
+    "module": "Student",
+    "api": "SECURITY: Password exposed",
+    "method": "POST",
+    "path": "/api/admin/student/admit",
+    "status": 201,
+    "pass": "❌",
+    "detail": "⚠️ PASSWORD HASH EXPOSED: $2b$10$aPNAW4DLxRp.j..."
+  },
+  {
+    "module": "Student",
+    "api": "Get All",
+    "method": "GET",
+    "path": "/api/admin/student/all",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Student",
+    "api": "Search",
+    "method": "GET",
+    "path": "/api/admin/student/search?q=Audit",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Count: 1"
+  },
+  {
+    "module": "Student",
+    "api": "Get By ID",
+    "method": "GET",
+    "path": "/api/admin/student/get/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Student retrieved"
+  },
+  {
+    "module": "Student",
+    "api": "Update",
+    "method": "PUT",
+    "path": "/api/admin/student/update/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Student updated"
+  },
+  {
+    "module": "Payment",
+    "api": "Create Order",
+    "method": "POST",
+    "path": "/api/admin/payment/create-order",
+    "status": 404,
+    "pass": "⚠️",
+    "detail": "Expected failure without Razorpay: Plan not found"
+  },
+  {
+    "module": "Payment",
+    "api": "Verify Payment",
+    "method": "POST",
+    "path": "/api/admin/payment/verify-payment",
+    "status": 500,
+    "pass": "⚠️",
+    "detail": "Not safely testable locally: The \"key\" argument must be of type string or an instance of ArrayBuffer, Buffer,"
+  },
+  {
+    "module": "Dashboard",
+    "api": "Get Stats",
+    "method": "GET",
+    "path": "/api/admin/dashboard/stats",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Dashboard stats retrieved"
+  },
+  {
+    "module": "Student Auth",
+    "api": "Login (wrong pw)",
+    "method": "POST",
+    "path": "/api/student/login",
+    "status": 401,
+    "pass": "✅",
+    "detail": "Invalid credentials"
+  },
+  {
+    "module": "Student Auth",
+    "api": "Profile (no auth)",
+    "method": "GET",
+    "path": "/api/student/profile",
+    "status": 401,
+    "pass": "✅",
+    "detail": "Authentication failed: Missing or invalid token"
+  },
+  {
+    "module": "Student Auth",
+    "api": "Payments (no auth)",
+    "method": "GET",
+    "path": "/api/student/payments",
+    "status": 401,
+    "pass": "✅",
+    "detail": "Authentication failed: Missing or invalid token"
+  },
+  {
+    "module": "Student Auth",
+    "api": "Invoices (no auth)",
+    "method": "GET",
+    "path": "/api/student/invoices",
+    "status": 401,
+    "pass": "✅",
+    "detail": "Authentication failed: Missing or invalid token"
+  },
+  {
+    "module": "Student",
+    "api": "Delete (soft)",
+    "method": "DELETE",
+    "path": "/api/admin/student/delete/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Student deactivated and resources released"
+  },
+  {
+    "module": "Seat",
+    "api": "Delete",
+    "method": "DELETE",
+    "path": "/api/admin/seat/delete/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Seat deleted"
+  },
+  {
+    "module": "Locker",
+    "api": "Delete",
+    "method": "DELETE",
+    "path": "/api/admin/locker/delete/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Locker deleted"
+  },
+  {
+    "module": "Book",
+    "api": "Delete",
+    "method": "DELETE",
+    "path": "/api/admin/book/delete/:id",
+    "status": 200,
+    "pass": "✅",
+    "detail": "Book deleted"
+  },
+  {
+    "module": "Security",
+    "api": "JWT Fallback Mismatch",
+    "method": "-",
+    "path": "auth.js vs jwtHelper.js",
+    "status": 0,
+    "pass": "❌",
+    "detail": "auth.js='fallback-secret' vs jwtHelper.js='fallback-secret-key'"
+  },
+  {
+    "module": "Code",
+    "api": "generateStudentId(adminId)",
+    "method": "-",
+    "path": "utils/idGenerator.js",
+    "status": 0,
+    "pass": "✅",
+    "detail": "Accepts adminId param"
+  },
+  {
+    "module": "Code",
+    "api": "Controller passes adminId",
+    "method": "-",
+    "path": "controllers/admin/student.controller.js",
+    "status": 0,
+    "pass": "✅",
+    "detail": "Passes adminId"
+  }
+]
