@@ -63,8 +63,13 @@ const connectDB = async (uri, options = {}, retries = 5) => {
       );
       if (attempt === 2 && mongoURI.includes('mongodb+srv')) {
         try {
-          console.log('🔄 Atlas connection blocked (likely IP whitelist). Attempting local MongoDB fallback (mongodb://127.0.0.1:27017/library_sathi)...');
-          await mongoose.connect('mongodb://127.0.0.1:27017/library_sathi', connectionOptions);
+          console.log('🔄 Atlas connection blocked (likely IP whitelist). Attempting local MongoDB fallback...');
+          const fallbackHost = process.env.LOCAL_MONGO_URI || 'mongodb://127.0.0.1:27017/library_sathi';
+          try {
+            await mongoose.connect(fallbackHost, connectionOptions);
+          } catch (firstErr) {
+            await mongoose.connect('mongodb://host.docker.internal:27017/library_sathi', connectionOptions);
+          }
           console.log('✅ Connected to local MongoDB fallback successfully!');
           return mongoose.connection;
         } catch (localErr) {
