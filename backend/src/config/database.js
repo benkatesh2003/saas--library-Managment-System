@@ -61,9 +61,20 @@ const connectDB = async (uri, options = {}, retries = 5) => {
       console.error(
         `❌ MongoDB connection attempt ${attempt}/${retries} failed: ${err.message}`
       );
+      if (attempt === 2 && mongoURI.includes('mongodb+srv')) {
+        try {
+          console.log('🔄 Atlas connection blocked (likely IP whitelist). Attempting local MongoDB fallback (mongodb://127.0.0.1:27017/library_sathi)...');
+          await mongoose.connect('mongodb://127.0.0.1:27017/library_sathi', connectionOptions);
+          console.log('✅ Connected to local MongoDB fallback successfully!');
+          return mongoose.connection;
+        } catch (localErr) {
+          console.log('ℹ️  Local MongoDB fallback unavailable:', localErr.message);
+        }
+      }
       if (attempt === retries) {
-        console.error('💀 All MongoDB connection attempts failed. Exiting...');
-        process.exit(1);
+        console.error('⚠️ All initial MongoDB connection attempts failed. Check if your current IP is whitelisted in MongoDB Atlas Network Access (https://cloud.mongodb.com). Retrying in background every 20s...');
+        setTimeout(() => connectDB(uri, options, retries).catch(() => {}), 20000);
+        return null;
       }
       // Exponential backoff: 1s, 2s, 4s, 8s, 16s
       const delay = Math.pow(2, attempt - 1) * 1000;

@@ -8,11 +8,18 @@ const authCtrl = require('../controllers/superAdmin/auth.controller');
 const featureCtrl = require('../controllers/superAdmin/feature.controller');
 const planCtrl = require('../controllers/superAdmin/plan.controller');
 const subCtrl = require('../controllers/superAdmin/subscription.controller');
+const demoCtrl = require('../controllers/superAdmin/demoRequest.controller');
 
 // ─── Auth Routes ─────────────────────────────────────
 router.post('/auth/register', validateSuperAdminRegister, handleValidationErrors, authCtrl.register);
 router.post('/auth/login', validateLogin, handleValidationErrors, authCtrl.login);
 router.get('/auth/profile', authenticate, isSuperAdmin, authCtrl.getProfile);
+
+// ─── Demo Request / Leads Routes (Public Submission + Admin Management) ──
+router.post('/demo-request/create', demoCtrl.createDemoRequest);
+router.get('/demo-request/all', authenticate, isSuperAdmin, demoCtrl.getAllDemoRequests);
+router.patch('/demo-request/status/:id', authenticate, isSuperAdmin, demoCtrl.updateDemoRequestStatus);
+router.delete('/demo-request/delete/:id', authenticate, isSuperAdmin, demoCtrl.deleteDemoRequest);
 
 // ─── Feature Routes ─────────────────────────────────
 router.post('/feature/create', authenticate, isSuperAdmin, uploadSingle, featureCtrl.createFeature);

@@ -12,21 +12,42 @@ import { Footer } from '../../components/landing/Footer';
 
 export function HomePage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [selectedPlanForDemo, setSelectedPlanForDemo] = useState(null);
+
+  const handleOpenGeneralDemo = () => {
+    setSelectedPlanForDemo(null);
+    setIsDemoModalOpen(true);
+  };
+
+  const handleSelectPlan = (plan) => {
+    setSelectedPlanForDemo(plan);
+    setIsDemoModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar onOpenDemoModal={() => setIsDemoModalOpen(true)} />
+      <Navbar onOpenDemoModal={handleOpenGeneralDemo} />
       <main className="flex-1">
-        <HeroSection onOpenDemoModal={() => setIsDemoModalOpen(true)} />
+        <HeroSection onOpenDemoModal={handleOpenGeneralDemo} />
         <LiveSeatGridDemo />
         <FeaturesSection />
-        <RoiCalculator onOpenDemoModal={() => setIsDemoModalOpen(true)} />
-        <PricingSection onOpenDemoModal={() => setIsDemoModalOpen(true)} />
+        <RoiCalculator onOpenDemoModal={handleOpenGeneralDemo} />
+        <PricingSection
+          onOpenDemoModal={handleOpenGeneralDemo}
+          onSelectPlan={handleSelectPlan}
+        />
         <TestimonialsSection />
         <FaqSection />
       </main>
       <Footer />
-      <BookDemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
+      <BookDemoModal
+        isOpen={isDemoModalOpen}
+        selectedPlan={selectedPlanForDemo}
+        onClose={() => {
+          setIsDemoModalOpen(false);
+          setSelectedPlanForDemo(null);
+        }}
+      />
     </div>
   );
 }

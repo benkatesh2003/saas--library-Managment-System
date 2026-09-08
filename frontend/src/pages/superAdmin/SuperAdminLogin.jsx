@@ -56,44 +56,41 @@ export function SuperAdminLogin() {
 
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between p-4 sm:p-6 relative overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen bg-[#0A0A0A] text-neutral-100 flex flex-col justify-between p-4 sm:p-6 relative">
       {/* Top Header */}
-      <div className="flex items-center justify-between max-w-md w-full mx-auto relative z-10">
-        <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs">
-          <span>← Back to Website</span>
+      <div className="flex items-center justify-between max-w-sm w-full mx-auto relative z-10">
+        <Link to="/" className="text-neutral-400 hover:text-white transition-colors text-xs">
+          ← Public Website
         </Link>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border text-emerald-400 bg-emerald-950/60 border-emerald-800">
-            ● Live API (Port 5000)
+          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-900/60 px-2 py-0.5 rounded">
+            Live 5000
           </span>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">
-            Platform Root
+          <span className="text-[10px] font-mono text-neutral-500 bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded">
+            Root
           </span>
         </div>
       </div>
 
       {/* Main Login Card */}
-      <div className="max-w-md w-full mx-auto bg-slate-900/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl space-y-6 relative z-10">
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/20">
-            <Shield className="w-6 h-6" />
+      <div className="max-w-sm w-full mx-auto bg-neutral-900/80 border border-neutral-800 rounded-lg p-6 sm:p-7 shadow-xl space-y-5 relative z-10">
+        <div className="text-center space-y-1">
+          <div className="w-8 h-8 rounded-md bg-white text-neutral-950 flex items-center justify-center mx-auto shadow-2xs mb-2 font-bold">
+            <Shield className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Super Admin Console</h1>
-          <p className="text-xs text-slate-400">
-            Root access for platform SaaS multi-tenancy, plan management, and subscriptions.
+          <h1 className="text-lg font-bold text-white tracking-tight">Super Admin Console</h1>
+          <p className="text-xs text-neutral-400">
+            Root access for platform multi-tenancy and plans.
           </p>
         </div>
 
         {/* Tab switch between Sign In and Register */}
-        <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+        <div className="flex bg-neutral-950 p-1 rounded-md border border-neutral-800">
           <button
             type="button"
             onClick={() => { setIsRegisterMode(false); setError(''); }}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-              !isRegisterMode ? 'bg-brand-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-1.5 text-xs font-medium rounded transition-colors flex items-center justify-center gap-1.5 ${
+              !isRegisterMode ? 'bg-neutral-800 text-white shadow-2xs' : 'text-neutral-400 hover:text-white'
             }`}
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -102,19 +99,18 @@ export function SuperAdminLogin() {
           <button
             type="button"
             onClick={() => { setIsRegisterMode(true); setError(''); }}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-              isRegisterMode ? 'bg-brand-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-1.5 text-xs font-medium rounded transition-colors flex items-center justify-center gap-1.5 ${
+              isRegisterMode ? 'bg-neutral-800 text-white shadow-2xs' : 'text-neutral-400 hover:text-white'
             }`}
           >
             <UserPlus className="w-3.5 h-3.5" />
-            <span>Register Admin</span>
+            <span>Register</span>
           </button>
         </div>
 
-
         {/* Error Alert */}
         {error && (
-          <div className="p-3 bg-rose-950/80 border border-rose-800 text-rose-300 text-xs rounded-xl flex items-center gap-2">
+          <div className="p-3 bg-rose-950/40 border border-rose-900/60 text-rose-300 text-xs rounded-md flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <span>{error}</span>
           </div>
@@ -122,55 +118,53 @@ export function SuperAdminLogin() {
 
         {/* Success Alert */}
         {successMsg && (
-          <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs rounded-xl flex items-center gap-2">
+          <div className="p-3 bg-emerald-950/40 border border-emerald-900/60 text-emerald-300 text-xs rounded-md flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
             <span>{successMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {isRegisterMode && (
             <div>
-              <label className="text-xs font-bold text-slate-300 block mb-1">Full Name</label>
-              <div className="relative">
-                <input
-                  required
-                  type="text"
-                  placeholder="System Administrator"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2.5 text-xs bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-white"
-                />
-              </div>
+              <label className="text-xs font-medium text-neutral-300 block mb-1">Full Name</label>
+              <input
+                required
+                type="text"
+                placeholder="System Administrator"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-1.5 text-xs bg-neutral-950 border border-neutral-800 rounded-md focus:outline-none focus:border-neutral-400 text-white placeholder:text-neutral-600"
+              />
             </div>
           )}
 
           <div>
-            <label className="text-xs font-bold text-slate-300 block mb-1">Super Admin Email</label>
+            <label className="text-xs font-medium text-neutral-300 block mb-1">Super Admin Email</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+              <Mail className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-2.5" />
               <input
                 required
                 type="email"
                 placeholder="superadmin@librarysathi.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-white font-mono"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-950 border border-neutral-800 rounded-md focus:outline-none focus:border-neutral-400 text-white font-mono placeholder:text-neutral-600"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-300 block mb-1">Security Key / Password</label>
+            <label className="text-xs font-medium text-neutral-300 block mb-1">Security Password</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+              <Lock className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-2.5" />
               <input
                 required
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 text-white"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-neutral-950 border border-neutral-800 rounded-md focus:outline-none focus:border-neutral-400 text-white placeholder:text-neutral-600"
               />
             </div>
           </div>
@@ -178,31 +172,31 @@ export function SuperAdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2"
+            className="w-full py-2 px-3 rounded-md bg-white hover:bg-neutral-200 disabled:opacity-50 text-neutral-950 font-medium text-xs shadow-2xs transition-colors flex items-center justify-center gap-1.5 mt-2"
           >
             {loading ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Authenticating with Backend...</span>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <span>Authenticating...</span>
               </>
             ) : (
               <>
-                <span>{isRegisterMode ? 'Register Super Admin' : 'Enter Super Admin Console'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>{isRegisterMode ? 'Create Super Admin' : 'Access Console'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
-        <div className="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1.5 pt-2 border-t border-slate-800">
-          <Terminal className="w-3.5 h-3.5 text-brand-400" />
-          <span>Non-prominent administrative route</span>
+        <div className="text-center text-[10px] text-neutral-500 flex items-center justify-center gap-1.5 pt-2 border-t border-neutral-800">
+          <Terminal className="w-3 h-3 text-neutral-400" />
+          <span>Restricted administrative route</span>
         </div>
       </div>
 
       {/* Footer info */}
-      <div className="text-center text-xs text-slate-600 relative z-10">
-        © {new Date().getFullYear()} Library Sathi Platform Operations.
+      <div className="text-center text-[11px] text-neutral-600 relative z-10 font-mono">
+        © {new Date().getFullYear()} LibrarySathi • Platform Root
       </div>
     </div>
   );

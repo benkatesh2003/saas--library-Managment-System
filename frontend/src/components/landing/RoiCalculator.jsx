@@ -13,34 +13,31 @@ export function RoiCalculator({ onOpenDemoModal }) {
   const annualBoost = (preventedLeakage * 12) + (savedHours * 200 * 12);
 
   return (
-    <section id="calculator" className="py-20 bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 text-white relative overflow-hidden">
-      {/* Glow effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="text-brand-300 font-extrabold text-xs tracking-wider uppercase bg-brand-900/60 border border-brand-700/60 px-3 py-1 rounded-full">
-            ROI & Leakage Calculator
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3">
-            See How Much Revenue You Are Losing to Manual Registers
+    <section id="calculator" className="py-16 bg-[#0A0A0A] text-white border-b border-neutral-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs font-mono mb-3">
+            <span>FINANCIAL IMPACT</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            Calculate your operational ROI.
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base mt-2">
-            Most library owners in India lose between 10% to 15% of their fee revenue due to unmonitored overstays, untracked shift extensions, and missed follow-ups.
+          <p className="text-neutral-400 text-sm sm:text-base mt-2">
+            Most library operators lose between 10% to 15% of annual revenue to untracked shift extensions and uncollected student dues.
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-slate-800/80 backdrop-blur-md rounded-3xl border border-slate-700/80 p-6 sm:p-10 shadow-2xl">
+        <div className="max-w-4xl mx-auto bg-neutral-950 rounded-lg border border-neutral-800 p-6 sm:p-8 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             {/* Left Controls */}
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    Total Library Desks / Seats
+                  <label className="text-xs font-mono uppercase text-neutral-400">
+                    Total Library Desks
                   </label>
-                  <span className="text-xl font-extrabold text-brand-300 font-mono">
-                    {seats} Seats
+                  <span className="text-lg font-bold text-white font-mono">
+                    {seats} Desks
                   </span>
                 </div>
                 <input
@@ -50,9 +47,9 @@ export function RoiCalculator({ onOpenDemoModal }) {
                   step="5"
                   value={seats}
                   onChange={(e) => setSeats(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-500"
+                  className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-white"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
+                <div className="flex justify-between text-[10px] text-neutral-500 mt-1 font-mono">
                   <span>20</span>
                   <span>100</span>
                   <span>200</span>
@@ -62,10 +59,10 @@ export function RoiCalculator({ onOpenDemoModal }) {
 
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    Average Monthly Fee Per Shift
+                  <label className="text-xs font-mono uppercase text-neutral-400">
+                    Avg Monthly Fee / Shift
                   </label>
-                  <span className="text-xl font-extrabold text-brand-300 font-mono">
+                  <span className="text-lg font-bold text-white font-mono">
                     {formatINR(avgFee)}
                   </span>
                 </div>
@@ -76,9 +73,9 @@ export function RoiCalculator({ onOpenDemoModal }) {
                   step="50"
                   value={avgFee}
                   onChange={(e) => setAvgFee(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-500"
+                  className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-white"
                 />
-                <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
+                <div className="flex justify-between text-[10px] text-neutral-500 mt-1 font-mono">
                   <span>₹400</span>
                   <span>₹1,000</span>
                   <span>₹1,500</span>
@@ -86,49 +83,49 @@ export function RoiCalculator({ onOpenDemoModal }) {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-700/60 space-y-2 text-xs text-slate-300">
+              <div className="pt-2 border-t border-neutral-800 space-y-2 text-xs text-neutral-400">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Calculated across 2 to 3 shifts per desk</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-neutral-300" />
+                  <span>Calculated across 2.2 active shifts per desk</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Automated expiry due date alerts</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-neutral-300" />
+                  <span>Automatic fee due tracking and notifications</span>
                 </div>
               </div>
             </div>
 
             {/* Right Results Card */}
-            <div className="bg-gradient-to-br from-brand-900/60 via-slate-900 to-slate-950 p-6 rounded-2xl border border-brand-500/30 text-center space-y-5">
+            <div className="bg-neutral-900/90 p-5 rounded-md border border-neutral-800 text-center space-y-4">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-300">
-                  Estimated Annual Value Added
+                <span className="text-[11px] font-mono uppercase text-neutral-400 block">
+                  Estimated Value Recovered
                 </span>
-                <div className="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono mt-1">
-                  +{formatINR(annualBoost)} / yr
+                <div className="text-3xl sm:text-4xl font-bold text-white font-mono mt-1">
+                  +{formatINR(annualBoost)} <span className="text-sm text-neutral-400 font-normal">/ yr</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">
-                  In recovered fee leakages & saved administrative labor
+                <p className="text-[11px] text-neutral-500 mt-1">
+                  From recovered fee leakages and automated bookkeeping
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800 text-left">
-                <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/40">
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Monthly Dues Recovered</span>
-                  <span className="text-base font-bold text-white font-mono mt-0.5 block">{formatINR(preventedLeakage)}</span>
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-800 text-left">
+                <div className="bg-neutral-950 p-2.5 rounded border border-neutral-800">
+                  <span className="text-[10px] text-neutral-400 font-mono block">Monthly Dues Recovered</span>
+                  <span className="text-sm font-bold text-white font-mono mt-0.5 block">{formatINR(preventedLeakage)}</span>
                 </div>
-                <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/40">
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Admin Time Saved</span>
-                  <span className="text-base font-bold text-white font-mono mt-0.5 block">{savedHours} hrs / mo</span>
+                <div className="bg-neutral-950 p-2.5 rounded border border-neutral-800">
+                  <span className="text-[10px] text-neutral-400 font-mono block">Admin Time Saved</span>
+                  <span className="text-sm font-bold text-white font-mono mt-0.5 block">{savedHours} hrs / mo</span>
                 </div>
               </div>
 
               <button
                 onClick={onOpenDemoModal}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-brand-500/30 transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-md bg-white hover:bg-neutral-100 text-neutral-900 font-medium text-xs transition-colors shadow-2xs flex items-center justify-center gap-2"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>Start Saving Revenue - Book Free Demo</span>
+                <Sparkles className="w-3.5 h-3.5 text-neutral-800" />
+                <span>Schedule Walkthrough</span>
               </button>
             </div>
           </div>

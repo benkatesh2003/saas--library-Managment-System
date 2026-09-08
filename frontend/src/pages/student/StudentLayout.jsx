@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UnverifiedBadge } from '../../components/common/UnverifiedBadge';
+import { ThemeToggle } from '../../components/common/ThemeToggle';
 
 export function StudentLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,62 +36,61 @@ export function StudentLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       {/* Mobile Drawer Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Top Header */}
-      <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between">
+      <header className="h-14 bg-white border-b border-neutral-200 sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="md:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+            className="md:hidden p-1.5 text-neutral-600 hover:text-neutral-900 rounded-md hover:bg-neutral-100"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4" />
           </button>
 
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-extrabold shadow-sm">
-              <BookOpen className="w-4 h-4" />
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-neutral-950 flex items-center justify-center text-white font-bold shadow-2xs">
+              <BookOpen className="w-3.5 h-3.5" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-extrabold text-slate-900 tracking-tight">Library<span className="text-brand-600">Sathi</span></span>
-              <span className="text-[10px] text-slate-500 font-medium">Student Portal{admin?.libraryName ? ` • ${admin.libraryName}` : ''}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-bold text-neutral-900 tracking-tight">LibrarySathi</span>
+              <span className="text-[10px] font-mono font-medium text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.2 rounded">Student</span>
             </div>
           </Link>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Active Student Membership</span>
-          </div>
+          {/* Theme Toggle (Black / White) */}
+          <ThemeToggle showLabel={true} />
 
-          <div className="hidden lg:block">
-            <UnverifiedBadge type="STUDENT_AUTH" size="xs" />
+          <div className="hidden sm:flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-medium">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Active Member</span>
           </div>
 
           {/* Student Avatar and Logout */}
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center border border-brand-300">
+          <div className="flex items-center gap-2 pl-2 border-l border-neutral-200">
+            <div className="w-7 h-7 rounded-full bg-neutral-100 text-neutral-800 font-semibold text-xs flex items-center justify-center border border-neutral-200">
               {student?.name?.[0] || 'S'}
             </div>
-            <div className="hidden md:block text-left">
-              <div className="text-xs font-bold text-slate-800 leading-tight">{student?.name || 'Student'}</div>
-              <div className="text-[10px] text-slate-500 font-mono">{student?.admissionNumber || student?.studentId || 'Member'}</div>
+            <div className="hidden md:block text-left pr-1">
+              <div className="text-xs font-medium text-neutral-900 leading-tight">{student?.name || 'Student'}</div>
+              <div className="text-[10px] text-neutral-400 font-mono">{student?.admissionNumber || student?.studentId || 'Member'}</div>
             </div>
 
             <button
               onClick={handleLogout}
-              className="ml-2 p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+              className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
               title="Sign Out Student Portal"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -100,31 +100,31 @@ export function StudentLayout() {
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
         {/* Sidebar Navigation */}
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-200 md:translate-x-0 md:static md:inset-auto ${
+          className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-200 flex flex-col justify-between transition-transform duration-200 md:translate-x-0 md:static md:inset-auto ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between md:hidden pb-3 border-b border-slate-100">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Navigation</span>
-              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
+          <div className="p-3.5 space-y-3">
+            <div className="flex items-center justify-between md:hidden pb-2 border-b border-neutral-150">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Navigation</span>
+              <button onClick={() => setSidebarOpen(false)} className="text-neutral-400 hover:text-neutral-700">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Quick Student Card in Sidebar */}
-            <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-1">
-              <div className="text-[11px] font-bold text-slate-500 uppercase">Assigned Space</div>
-              <div className="text-sm font-extrabold text-slate-900">
-                Desk <span className="text-brand-600 font-mono">{student?.seat?.seatNumber || student?.seatNumber || '—'}</span>
+            <div className="bg-neutral-50/80 p-3 rounded-md border border-neutral-200 space-y-1">
+              <div className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">Assigned Space</div>
+              <div className="text-xs font-semibold text-neutral-900">
+                Desk <span className="text-neutral-900 font-mono font-bold">{student?.seat?.seatNumber || student?.seatNumber || '—'}</span>
               </div>
-              <div className="text-xs text-slate-600 font-medium">
+              <div className="text-[11px] text-neutral-500">
                 {student?.shift?.name || student?.shiftName || 'Standard Access'}
               </div>
             </div>
 
             {/* Nav links */}
-            <nav className="space-y-1">
+            <nav className="space-y-0.5">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
@@ -133,13 +133,13 @@ export function StudentLayout() {
                     key={item.name}
                     to={item.href}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                    className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs font-medium transition-colors ${
                       isActive
-                        ? 'bg-brand-600 text-white shadow-sm shadow-brand-500/30'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        ? 'bg-neutral-900 text-white shadow-2xs'
+                        : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-neutral-500'}`} />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -147,18 +147,18 @@ export function StudentLayout() {
             </nav>
           </div>
 
-          <div className="p-4 border-t border-slate-100 space-y-2">
+          <div className="p-3 border-t border-neutral-200 bg-neutral-50/50 space-y-1.5">
             <Link
               to="/"
-              className="flex items-center justify-center gap-1.5 w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors"
+              className="flex items-center justify-center gap-1.5 w-full py-1.5 text-xs font-medium text-neutral-700 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-md transition-colors shadow-2xs"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5 text-neutral-500" />
               <span>Public Website</span>
             </Link>
 
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center gap-1.5 w-full py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+              className="flex items-center justify-center gap-1.5 w-full py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-md transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>

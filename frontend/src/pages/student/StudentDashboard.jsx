@@ -127,18 +127,16 @@ export function StudentDashboard() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      {/* Top Disclaimer Banner */}
-
       {/* Error Alert Banner */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl flex items-center justify-between text-sm">
+        <div className="bg-rose-50/50 border border-rose-200 text-rose-900 px-3.5 py-2.5 rounded-md flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
           <button
             onClick={() => fetchStudentData(true)}
-            className="text-xs font-semibold text-rose-700 underline hover:text-rose-900"
+            className="text-xs font-medium text-rose-700 underline hover:text-rose-900"
           >
             Retry
           </button>
@@ -146,65 +144,68 @@ export function StudentDashboard() {
       )}
 
       {/* Page Header Bar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Student Dashboard</span>
+      <div className="flex items-center justify-between pb-4 border-b border-neutral-200">
+        <div>
+          <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Student Workspace</h1>
+          <p className="text-xs text-neutral-500 mt-0.5">
+            View allocated desk, shift hours, personal locker, and fee invoices.
+          </p>
         </div>
         <button
           onClick={() => fetchStudentData(true)}
           disabled={loading || refreshing}
-          className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:border-brand-300 px-3 py-1.5 rounded-xl shadow-xs transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 text-xs font-medium text-neutral-700 bg-white border border-neutral-200 hover:bg-neutral-50 px-3 py-1.5 rounded-md shadow-2xs transition-colors disabled:opacity-50"
           title="Refresh profile & invoices"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-brand-600' : 'text-slate-500'}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-neutral-900' : 'text-neutral-500'}`} />
           <span>{refreshing ? 'Syncing...' : 'Sync'}</span>
         </button>
       </div>
 
       {/* Student Profile Overview Banner Card */}
-      <div className="bg-gradient-to-r from-brand-900 via-slate-900 to-slate-950 text-white p-6 sm:p-8 rounded-3xl border border-brand-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div className="bg-[#0A0A0A] text-white p-5 sm:p-6 rounded-lg border border-neutral-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-brand-600/30 border border-brand-400/40 text-brand-300 text-2xl font-extrabold flex items-center justify-center">
+          <div className="w-12 h-12 rounded-md bg-neutral-900 border border-neutral-800 text-white text-lg font-semibold flex items-center justify-center font-mono">
             {student?.name?.[0] || 'S'}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-extrabold tracking-tight">{student?.name || 'Member'}</h1>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              <h2 className="text-lg font-semibold tracking-tight text-white">{student?.name || 'Member'}</h2>
+              <span className={`text-[10px] font-mono px-2 py-0.5 rounded border uppercase font-medium ${
                 student?.isActive !== false
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                  : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                  ? 'bg-neutral-900 text-emerald-400 border-neutral-800'
+                  : 'bg-neutral-900 text-rose-400 border-neutral-800'
               }`}>
-                {student?.isActive !== false ? 'Active Member' : 'Inactive'}
+                {student?.isActive !== false ? 'Active' : 'Inactive'}
               </span>
             </div>
-            <div className="text-xs text-slate-400 font-mono mt-1">
-              ID: {student?.studentId || 'N/A'} • {admin.libraryName}
+            <div className="text-xs text-neutral-400 font-mono mt-0.5">
+              ID: {student?.studentId || 'N/A'} • {admin.libraryName || 'Library Member'}
             </div>
-            <div className="text-xs text-brand-300 font-medium mt-1">
+            <div className="text-xs text-neutral-500 font-mono mt-0.5">
               Valid Till: {validTill ? formatDate(validTill) : 'Ongoing'}
             </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/10 text-left sm:text-right">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Assigned Shift</span>
-          <span className="text-base font-extrabold text-white block mt-0.5">{shiftName}</span>
-          <span className="text-[11px] text-brand-300 font-mono">{student?.phone ? `Mob: ${student.phone}` : 'Official Enrollment'}</span>
+        <div className="bg-neutral-900/80 px-3.5 py-2.5 rounded-md border border-neutral-800 text-left sm:text-right min-w-44">
+          <span className="text-[10px] uppercase font-mono text-neutral-400 block">Assigned Shift</span>
+          <span className="text-sm font-semibold text-white block mt-0.5">{shiftName}</span>
+          <span className="text-[11px] text-neutral-400 font-mono">{student?.phone ? `Mob: ${student.phone}` : 'Active Enrollment'}</span>
         </div>
       </div>
 
       {/* Due Fee Alert & Razorpay Online Payment */}
       {(student?.paymentStatus === 'due' || student?.paymentStatus === 'partial') && (
-        <div className="bg-amber-50 border border-amber-200 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-amber-50/50 border border-amber-200 p-4 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-              <CreditCard className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-md bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+              <CreditCard className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-amber-900 flex items-center gap-2">
+              <div className="text-xs font-semibold text-amber-900 flex items-center gap-2">
                 <span>Pending Library Fee Balance</span>
-                <span className="bg-amber-200 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                <span className="bg-amber-100 border border-amber-300 text-amber-800 text-[10px] font-mono font-medium px-1.5 py-0.2 rounded uppercase">
                   {student.paymentStatus}
                 </span>
               </div>
@@ -217,114 +218,114 @@ export function StudentDashboard() {
           <button
             onClick={handleStudentPayFee}
             disabled={payingOnline}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 disabled:opacity-50 cursor-pointer self-stretch sm:self-auto justify-center"
+            className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-md text-xs font-medium transition-colors shadow-xs flex items-center gap-2 disabled:opacity-50 cursor-pointer self-stretch sm:self-auto justify-center"
           >
             <CreditCard className="w-3.5 h-3.5" />
-            <span>{payingOnline ? 'Opening Razorpay...' : 'Pay Fee Online with Razorpay'}</span>
+            <span>{payingOnline ? 'Opening Razorpay...' : 'Pay Online with Razorpay'}</span>
           </button>
         </div>
       )}
 
       {/* Quick Action Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Link
           to="/student/profile"
-          className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-brand-300 flex items-center justify-between group transition-all"
+          className="bg-white p-3.5 rounded-lg border border-neutral-200 shadow-2xs hover:border-neutral-300 flex items-center justify-between group transition-all"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
-              <IdCard className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-md bg-neutral-100 text-neutral-700 flex items-center justify-center border border-neutral-200">
+              <IdCard className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-xs font-bold text-slate-800 block">Digital Pass & QR ID</span>
-              <span className="text-[11px] text-slate-400">View official gate badge</span>
+              <span className="text-xs font-medium text-neutral-900 block">Digital Pass & QR ID</span>
+              <span className="text-[11px] text-neutral-500">View official gate badge</span>
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-brand-600 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all" />
         </Link>
 
         <Link
           to="/student/invoices"
-          className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-brand-300 flex items-center justify-between group transition-all"
+          className="bg-white p-3.5 rounded-lg border border-neutral-200 shadow-2xs hover:border-neutral-300 flex items-center justify-between group transition-all"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Receipt className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-md bg-neutral-100 text-neutral-700 flex items-center justify-center border border-neutral-200">
+              <Receipt className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-xs font-bold text-slate-800 block">Fee Receipts</span>
-              <span className="text-[11px] text-slate-400">Download or print invoices</span>
+              <span className="text-xs font-medium text-neutral-900 block">Fee Receipts</span>
+              <span className="text-[11px] text-neutral-500">Download or print invoices</span>
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-brand-600 group-hover:translate-x-0.5 transition-all" />
+          <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all" />
         </Link>
       </div>
 
       {/* Allocation Info Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Seat Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
-            <Armchair className="w-6 h-6" />
+        <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-2xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0 border border-neutral-200">
+            <Armchair className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">Allocated Desk</span>
-            <span className="text-xl font-extrabold font-mono text-slate-900">{seatNumber}</span>
-            <span className="text-[10px] text-emerald-600 font-semibold block">Reserved For You</span>
+            <span className="text-[10px] text-neutral-400 font-medium uppercase tracking-wider block">Allocated Desk</span>
+            <span className="text-base font-semibold font-mono text-neutral-900">{seatNumber}</span>
+            <span className="text-[10px] text-emerald-600 font-medium block">Assigned Seat</span>
           </div>
         </div>
 
         {/* Shift Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-            <Clock className="w-6 h-6" />
+        <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-2xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0 border border-neutral-200">
+            <Clock className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">Shift Timing</span>
-            <span className="text-sm font-extrabold text-slate-900 block mt-0.5">{shiftTiming}</span>
-            <span className="text-[10px] text-slate-500 block">{shiftName}</span>
+            <span className="text-[10px] text-neutral-400 font-medium uppercase tracking-wider block">Shift Timing</span>
+            <span className="text-xs font-semibold font-mono text-neutral-900 block mt-0.5">{shiftTiming}</span>
+            <span className="text-[10px] text-neutral-500 block truncate">{shiftName}</span>
           </div>
         </div>
 
         {/* Locker Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-            <KeyRound className="w-6 h-6" />
+        <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-2xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-neutral-100 text-neutral-700 flex items-center justify-center shrink-0 border border-neutral-200">
+            <KeyRound className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">Personal Locker</span>
-            <span className="text-xl font-extrabold font-mono text-slate-900">{lockerNumber}</span>
-            <span className="text-[10px] text-slate-500 block">Facility Locker Bay</span>
+            <span className="text-[10px] text-neutral-400 font-medium uppercase tracking-wider block">Personal Locker</span>
+            <span className="text-base font-semibold font-mono text-neutral-900">{lockerNumber}</span>
+            <span className="text-[10px] text-neutral-500 block">Facility Bay</span>
           </div>
         </div>
       </div>
 
       {/* Fee Invoices & Payment History Preview */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-lg border border-neutral-200 p-5 shadow-2xs space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Recent Fee Invoices</h3>
-            <p className="text-xs text-slate-500">Official computerized payment receipts issued by library</p>
+            <h3 className="text-sm font-semibold text-neutral-900">Recent Fee Invoices</h3>
+            <p className="text-xs text-neutral-500">Official computerized payment receipts issued by library</p>
           </div>
           <Link
             to="/student/invoices"
-            className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+            className="text-xs font-medium text-neutral-900 hover:text-neutral-700 flex items-center gap-1"
           >
             <span>View All</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
         {invoices.length === 0 ? (
-          <div className="py-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-            <Receipt className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="text-xs font-semibold text-slate-600">No fee invoices or receipts found for this account.</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-                            Invoices generated upon enrollment or renewal will appear here.
+          <div className="py-8 text-center bg-neutral-50 rounded-md border border-neutral-200">
+            <Receipt className="w-6 h-6 text-neutral-400 mx-auto mb-1.5" />
+            <p className="text-xs font-medium text-neutral-700">No fee invoices found for this account.</p>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              Invoices generated upon enrollment or renewal will appear here.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-neutral-100">
             {invoices.slice(0, 5).map((inv) => {
               const invId = inv.invoiceNumber || inv.id || inv._id;
               const invAmount = inv.totalPayable ?? inv.amountPaidNow ?? inv.amount ?? 0;
@@ -334,27 +335,27 @@ export function StudentDashboard() {
               const invMode = inv.paymentMethod || inv.mode || 'Direct';
 
               return (
-                <div key={invId} className="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                <div key={invId} className="py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
                   <div>
-                    <div className="font-bold text-slate-900 flex items-center gap-2">
+                    <div className="font-medium text-neutral-900 flex items-center gap-2">
                       <span className="font-mono">{invId}</span>
-                      <span className="font-normal text-slate-500">({invPeriod})</span>
+                      <span className="font-normal text-neutral-500">({invPeriod})</span>
                     </div>
-                    <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                    <div className="text-[11px] text-neutral-400 font-mono mt-0.5">
                       Issued {invDate ? formatDate(invDate) : 'N/A'} • Mode: {invMode}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-sm text-slate-900">{formatINR(invAmount)}</span>
-                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full uppercase">
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-mono font-semibold text-xs text-neutral-900">{formatINR(invAmount)}</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border uppercase font-medium bg-neutral-100 text-neutral-700 border-neutral-200">
                       {invStatus}
                     </span>
                     <button
                       onClick={() => setSelectedInvoice(inv)}
-                      className="p-1.5 text-brand-600 hover:text-brand-800 hover:bg-brand-50 rounded-lg flex items-center gap-1 font-semibold"
+                      className="p-1 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded flex items-center gap-1 font-medium"
                     >
-                      <Printer className="w-3.5 h-3.5" />
+                      <Printer className="w-3 h-3" />
                       <span>Receipt</span>
                     </button>
                   </div>
@@ -373,49 +374,49 @@ export function StudentDashboard() {
         const invPeriod = selectedInvoice.period || (selectedInvoice.startDate && selectedInvoice.endDate ? `${formatDate(selectedInvoice.startDate)} – ${formatDate(selectedInvoice.endDate)}` : 'Subscription');
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-            <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 text-slate-900 space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="bg-white rounded-lg p-5 max-w-md w-full shadow-lg border border-neutral-200 text-neutral-900 space-y-4 animate-in zoom-in-95 duration-150">
               {/* Header */}
-              <div className="text-center pb-3 border-b border-slate-200">
-                <h4 className="text-base font-extrabold">{admin.libraryName}</h4>
-                <p className="text-[11px] text-slate-500">{admin.address}</p>
-                <span className="text-[10px] font-mono text-slate-400 mt-1 block">Help: {admin.phone}</span>
+              <div className="text-center pb-3 border-b border-neutral-100">
+                <h4 className="text-sm font-semibold">{admin.libraryName}</h4>
+                <p className="text-[11px] text-neutral-500">{admin.address}</p>
+                <span className="text-[10px] font-mono text-neutral-400 mt-0.5 block">Help: {admin.phone}</span>
               </div>
 
               <div className="flex justify-between items-center text-xs">
-                <span className="font-mono font-bold">{invId}</span>
-                <span className="text-slate-500">{invDate ? formatDate(invDate) : 'N/A'}</span>
+                <span className="font-mono font-medium">{invId}</span>
+                <span className="text-neutral-500">{invDate ? formatDate(invDate) : 'N/A'}</span>
               </div>
 
-              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs space-y-2">
+              <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200 text-xs space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Student:</span>
-                  <span className="font-bold">{student?.name} ({student?.studentId})</span>
+                  <span className="text-neutral-500">Student:</span>
+                  <span className="font-medium">{student?.name} ({student?.studentId})</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Desk & Shift:</span>
-                  <span className="font-bold">{seatNumber} ({shiftName})</span>
+                  <span className="text-neutral-500">Desk & Shift:</span>
+                  <span className="font-medium">{seatNumber} ({shiftName})</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Subscription Period:</span>
+                  <span className="text-neutral-500">Period:</span>
                   <span className="font-mono">{invPeriod}</span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-slate-200 font-bold text-sm">
+                <div className="flex justify-between pt-2 border-t border-neutral-200 font-semibold text-xs">
                   <span>Total Amount Paid:</span>
-                  <span className="font-mono text-emerald-700">{formatINR(invAmount)}</span>
+                  <span className="font-mono text-neutral-900">{formatINR(invAmount)}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-100">
                 <button
                   onClick={() => setSelectedInvoice(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 rounded-md"
                 >
                   Close
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="px-5 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl flex items-center gap-1.5 shadow-sm"
+                  className="px-4 py-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded-md flex items-center gap-1.5 shadow-xs"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Print Copy</span>

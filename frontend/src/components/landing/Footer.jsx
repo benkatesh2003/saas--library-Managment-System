@@ -5,35 +5,38 @@ import { SUPPORT_EMAIL, SUPPORT_PHONE } from '../../utils/constants';
 
 export function Footer() {
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+    <footer className="bg-[#0A0A0A] text-neutral-400 pt-14 pb-10 border-t border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-neutral-800">
           {/* Brand Info (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-3.5">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
-                <BookOpen className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-md bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white shadow-2xs">
+                <BookOpen className="w-4 h-4" />
               </div>
-              <span className="text-xl font-extrabold text-white tracking-tight">
-                Library<span className="text-brand-500">Sathi</span>
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-semibold text-white tracking-tight">
+                  LibrarySathi
+                </span>
+                <span className="bg-neutral-900 text-neutral-400 border border-neutral-800 text-[10px] font-mono px-1.5 py-0.5 rounded">v2.0</span>
+              </div>
             </Link>
 
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              India's leading all-in-one software platform for study libraries, coaching centers, reading rooms, and co-working spaces. Digitize your seat matrix, shifts, student fees, and lockers with zero hassle.
+            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
+              Cloud operating software for Indian study libraries, reading rooms, and co-working hubs. Complete shift automation, visual seat matrices, and automated fee invoicing.
             </p>
 
-            <div className="pt-1 space-y-2 text-xs text-slate-400">
+            <div className="pt-1 space-y-1.5 text-xs text-neutral-400 font-mono">
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-brand-400" />
+                <Mail className="w-3.5 h-3.5 text-neutral-500" />
                 <span>{SUPPORT_EMAIL}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-brand-400" />
+                <Phone className="w-3.5 h-3.5 text-neutral-500" />
                 <span>{SUPPORT_PHONE} (Mon - Sat, 9am - 8pm)</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-brand-400" />
+                <MapPin className="w-3.5 h-3.5 text-neutral-500" />
                 <span>Karol Bagh, New Delhi 110005, India</span>
               </div>
             </div>
@@ -41,29 +44,29 @@ export function Footer() {
 
           {/* Solution Links */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Solution</h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li><a href="#seat-demo" className="hover:text-brand-400 transition-colors">Seat & Shift Matrix</a></li>
-              <li><a href="#features" className="hover:text-brand-400 transition-colors">Student Admissions</a></li>
-              <li><a href="#features" className="hover:text-brand-400 transition-colors">Digital Locker Grid</a></li>
-              <li><a href="#features" className="hover:text-brand-400 transition-colors">Fee Receipts & Invoicing</a></li>
-              <li><a href="#features" className="hover:text-brand-400 transition-colors">Book Lending & Fines</a></li>
+            <h4 className="text-xs font-mono uppercase text-neutral-200 tracking-wider mb-3">Modules</h4>
+            <ul className="space-y-2 text-xs text-neutral-400">
+              <li><a href="#seat-demo" className="hover:text-white transition-colors">Seat & Shift Matrix</a></li>
+              <li><a href="#features" className="hover:text-white transition-colors">Student Admissions</a></li>
+              <li><a href="#features" className="hover:text-white transition-colors">Digital Locker Grid</a></li>
+              <li><a href="#features" className="hover:text-white transition-colors">Fee Receipts & Invoicing</a></li>
+              <li><a href="#features" className="hover:text-white transition-colors">Book Lending & Fines</a></li>
             </ul>
           </div>
 
           {/* Portals Links */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Portals</h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
+            <h4 className="text-xs font-mono uppercase text-neutral-200 tracking-wider mb-3">Portals</h4>
+            <ul className="space-y-2 text-xs text-neutral-400">
               <li>
-                <Link to="/admin/dashboard" className="text-brand-400 hover:text-brand-300 font-semibold flex items-center gap-1">
+                <Link to="/admin/dashboard" className="text-neutral-200 hover:text-white font-medium flex items-center gap-1">
                   <span>Admin Dashboard</span>
                 </Link>
               </li>
-              <li><Link to="/admin/students" className="hover:text-brand-400 transition-colors">Admit Student</Link></li>
-              <li><Link to="/admin/seats" className="hover:text-brand-400 transition-colors">Manage Seats</Link></li>
+              <li><Link to="/admin/students" className="hover:text-white transition-colors">Admit Student</Link></li>
+              <li><Link to="/admin/seats" className="hover:text-white transition-colors">Manage Seats</Link></li>
               <li>
-                <Link to="/student/login" className="hover:text-brand-400 transition-colors flex items-center gap-1.5">
+                <Link to="/student/login" className="hover:text-white transition-colors">
                   <span>Student Self-Service</span>
                 </Link>
               </li>
@@ -72,39 +75,37 @@ export function Footer() {
 
           {/* Trust & Notice */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Security & Trust</h4>
-            <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-2">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+            <h4 className="text-xs font-mono uppercase text-neutral-200 tracking-wider mb-3">Security & Trust</h4>
+            <div className="bg-neutral-900/80 p-3 rounded-md border border-neutral-800 text-xs text-neutral-400 space-y-1.5">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
                 <Shield className="w-3.5 h-3.5" />
-                <span>100% Encrypted & Secure</span>
+                <span>Encrypted & Verified</span>
               </div>
-              <p className="leading-relaxed">
-                Daily cloud backups. Your library membership records and fee books are protected with role-based access.
+              <p className="text-[11px] leading-relaxed text-neutral-500">
+                Automated daily cloud backups. Role-based access control for administrative staff and students.
               </p>
             </div>
           </div>
         </div>
 
         {/* Integration Status Notice */}
-        <div className="my-6 p-3 bg-slate-900/80 rounded-xl border border-emerald-900/40 text-[11px] text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-emerald-400 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Connected to Live Backend API (Port 5000)</span>
+        <div className="my-5 p-2.5 bg-neutral-950 rounded-md border border-neutral-800 text-[11px] text-neutral-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-emerald-400 font-mono text-[10px]">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>BACKEND ACTIVE ON PORT 5000</span>
           </div>
-          <span className="text-slate-500 text-[10px]">
-            Express REST APIs on MongoDB Atlas (`/api/admin/*`, `/api/student/*`, `/api/super-admin/*`).
+          <span className="text-neutral-500 text-[10px] font-mono">
+            REST API services connected (`/api/admin/*`, `/api/student/*`, `/api/super-admin/*`).
           </span>
         </div>
 
         {/* Copyright */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500 font-mono">
           <div>
-            © {new Date().getFullYear()} Library Sathi. All rights reserved.
+            © {new Date().getFullYear()} Library Sathi Technologies. All rights reserved.
           </div>
           <div className="flex items-center gap-1">
-            <span>Built with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>for Indian Library Entrepreneurs 🇮🇳</span>
+            <span>Engineered for Indian Study Centers 🇮🇳</span>
           </div>
         </div>
       </div>

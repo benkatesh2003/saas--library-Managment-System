@@ -67,30 +67,30 @@ export function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between p-4 sm:p-6">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-between p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between max-w-md w-full mx-auto">
+      <div className="flex items-center justify-between max-w-sm w-full mx-auto">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white">
-            <BookOpen className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-md bg-neutral-950 flex items-center justify-center text-white font-bold shadow-2xs">
+            <BookOpen className="w-3.5 h-3.5" />
           </div>
-          <span className="text-base font-extrabold text-slate-900 tracking-tight">Library<span className="text-brand-600">Sathi</span></span>
+          <span className="text-sm font-bold text-neutral-900 tracking-tight">LibrarySathi</span>
         </Link>
-        <span className="text-xs text-slate-500 font-medium">Admin Portal</span>
+        <span className="text-[11px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded">Admin Portal</span>
       </div>
 
       {/* Main Login Card */}
-      <div className="max-w-md w-full mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+      <div className="max-w-sm w-full mx-auto bg-white rounded-lg p-6 sm:p-7 border border-neutral-200 shadow-xs space-y-5">
         <div className="text-center space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Library Admin Login</h1>
-          <p className="text-xs text-slate-500">
-            Sign in to manage your reading space, seats, student fees, and shifts.
+          <h1 className="text-xl font-bold text-neutral-900 tracking-tight">Admin Sign In</h1>
+          <p className="text-xs text-neutral-500">
+            Access your library dashboard, desk matrix, and billing.
           </p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-start gap-2">
+          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-md flex items-start gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
             <div className="flex-1">
               <span className="font-semibold block">Authentication Error:</span>
@@ -99,27 +99,29 @@ export function AdminLogin() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-3.5">
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Email Address *</label>
+            <label className="text-xs font-medium text-neutral-700 block mb-1">Email address</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
               <input
                 required
                 type="email"
                 disabled={loading}
-                placeholder="name@example.com"
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Password *</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-medium text-neutral-700">Password</label>
+            </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
               <input
                 required
                 type="password"
@@ -127,7 +129,7 @@ export function AdminLogin() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
@@ -135,52 +137,57 @@ export function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold text-xs shadow-md shadow-brand-500/25 transition-all flex items-center justify-center gap-2"
+            className="w-full py-2 px-3 rounded-md bg-neutral-900 hover:bg-neutral-800 disabled:opacity-60 text-white font-medium text-xs shadow-2xs transition-colors flex items-center justify-center gap-1.5"
           >
             {loading ? (
               <span>Authenticating...</span>
             ) : (
               <>
-                <span>Sign In to Admin Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Sign in with Email</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
-        {/* Google OAuth Login */}
-        <div className="pt-2 border-t border-slate-100 space-y-2">
-          <div className="flex justify-center w-full">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              theme="outline"
-              size="large"
-              shape="pill"
-              text="continue_with"
-              width="384"
-            />
-          </div>
+        {/* Divider */}
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-neutral-200"></div>
+          <span className="flex-shrink mx-2 text-[10px] uppercase font-semibold text-neutral-400 tracking-wider">or</span>
+          <div className="flex-grow border-t border-neutral-200"></div>
         </div>
 
-        <div className="text-center text-xs text-slate-500 pt-2 border-t border-slate-100 space-y-1.5">
+        {/* Google OAuth Login */}
+        <div className="flex justify-center w-full">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="outline"
+            size="medium"
+            shape="rectangular"
+            text="continue_with"
+            width="336"
+          />
+        </div>
+
+        <div className="text-center text-xs text-neutral-500 pt-3 border-t border-neutral-150 space-y-1.5">
           <div>
-            <span>New library owner? </span>
-            <Link to="/admin/register" className="font-bold text-brand-600 hover:text-brand-700">
-              Create an Admin Account
+            <span>Don't have an account? </span>
+            <Link to="/admin/register" className="font-medium text-neutral-900 hover:underline">
+              Register library
             </Link>
           </div>
           <div>
-            <span className="text-slate-400">Looking for student login? </span>
-            <Link to="/student/login" className="font-bold text-brand-600 hover:text-brand-700">
-              Student Portal
+            <span className="text-neutral-400">Student access? </span>
+            <Link to="/student/login" className="font-medium text-neutral-700 hover:underline">
+              Student portal
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Library Sathi. Connected to live backend on port 5000.
+      <div className="text-center text-[11px] text-neutral-400 font-mono">
+        © {new Date().getFullYear()} LibrarySathi • Live Backend 5000
       </div>
     </div>
   );

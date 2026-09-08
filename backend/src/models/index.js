@@ -22,6 +22,7 @@ const Book = require('./book.model');
 const BookIssue = require('./bookIssue.model');
 const StudentPayment = require('./studentPayment.model');
 const StudentInvoice = require('./studentInvoice.model');
+const DemoRequest = require('./demoRequest.model');
 
 module.exports = {
   // ─── Platform Level ────────────────────────────────
@@ -29,6 +30,7 @@ module.exports = {
   Feature,
   Plan,
   Subscription,
+  DemoRequest,
 
   // ─── Tenant Level ──────────────────────────────────
   Admin,

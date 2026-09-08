@@ -86,42 +86,38 @@ export function AdminRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between p-4 sm:p-6">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-between p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between max-w-lg w-full mx-auto">
+      <div className="flex items-center justify-between max-w-md w-full mx-auto">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white">
-            <BookOpen className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-md bg-neutral-950 flex items-center justify-center text-white font-bold shadow-2xs">
+            <BookOpen className="w-3.5 h-3.5" />
           </div>
-          <span className="text-base font-extrabold text-slate-900 tracking-tight">
-            Library<span className="text-brand-600">Sathi</span>
-          </span>
+          <span className="text-sm font-bold text-neutral-900 tracking-tight">LibrarySathi</span>
         </Link>
-        <span className="text-xs text-slate-500 font-medium">Tenant Registration</span>
+        <span className="text-[11px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded">Tenant Setup</span>
       </div>
 
       {/* Main Registration Card */}
-      <div className="max-w-lg w-full mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-5 my-4">
+      <div className="max-w-md w-full mx-auto bg-white rounded-lg p-6 sm:p-7 border border-neutral-200 shadow-xs space-y-4 my-4">
         <div className="text-center space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Create Admin Account</h1>
-          <p className="text-xs text-slate-500">
-            Set up your library management workspace in under a minute.
+          <h1 className="text-xl font-bold text-neutral-900 tracking-tight">Create Admin Account</h1>
+          <p className="text-xs text-neutral-500">
+            Set up your library management workspace in seconds.
           </p>
         </div>
 
         {/* Mode Indicator & Quick Fill */}
-        <div className="bg-brand-50/70 p-3 rounded-2xl border border-brand-200 text-xs flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-bold text-brand-900">
-              Live API (Port 5000)
-            </span>
+        <div className="bg-neutral-50 p-2.5 rounded-md border border-neutral-200 text-xs flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-neutral-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span>Live Server (5000)</span>
           </div>
           <button
             type="button"
             onClick={handleQuickFill}
             disabled={loading}
-            className="px-3 py-1 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold text-xs shadow-2xs transition-colors shrink-0"
+            className="px-2 py-1 rounded bg-white hover:bg-neutral-100 border border-neutral-200 disabled:opacity-50 text-neutral-700 font-medium text-[11px] shadow-2xs transition-colors shrink-0"
           >
             Quick Fill Demo
           </button>
@@ -129,70 +125,70 @@ export function AdminRegister() {
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-start gap-2">
+          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-md flex items-start gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
             <div className="flex-1">
-              <span className="font-bold block">Registration Error</span>
+              <span className="font-semibold block">Registration Error</span>
               <span className="break-words">{error}</span>
             </div>
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-3.5">
+        <form onSubmit={handleRegister} className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">First Name *</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">First name *</label>
               <div className="relative">
-                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <User className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5" />
                 <input
                   required
                   type="text"
                   name="firstName"
                   disabled={loading}
-                  placeholder="e.g. Ramesh"
+                  placeholder="Ramesh"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Last Name</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">Last name</label>
               <input
                 type="text"
                 name="lastName"
                 disabled={loading}
-                placeholder="e.g. Sharma"
+                placeholder="Sharma"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full px-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Library / Space Name *</label>
+            <label className="text-xs font-medium text-neutral-700 block mb-1">Library / Space name *</label>
             <div className="relative">
-              <Building2 className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Building2 className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5" />
               <input
                 required
                 type="text"
                 name="libraryName"
                 disabled={loading}
-                placeholder="e.g. Apex Reading Library"
+                placeholder="Apex Reading Space"
                 value={formData.libraryName}
                 onChange={handleChange}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Email Address *</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">Email address *</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Mail className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5" />
                 <input
                   required
                   type="email"
@@ -201,15 +197,15 @@ export function AdminRegister() {
                   placeholder="admin@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Contact Phone</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">Phone</label>
               <div className="relative">
-                <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Phone className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5" />
                 <input
                   type="text"
                   name="phone"
@@ -217,16 +213,16 @@ export function AdminRegister() {
                   placeholder="10-digit mobile"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Password (Min. 6 chars) *</label>
+            <label className="text-xs font-medium text-neutral-700 block mb-1">Password (Min. 6 chars) *</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Lock className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5" />
               <input
                 required
                 type="password"
@@ -236,35 +232,35 @@ export function AdminRegister() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">City</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">City</label>
               <input
                 type="text"
                 name="city"
                 disabled={loading}
-                placeholder="e.g. New Delhi"
+                placeholder="New Delhi"
                 value={formData.city}
                 onChange={handleChange}
-                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full px-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">State</label>
+              <label className="text-xs font-medium text-neutral-700 block mb-1">State</label>
               <input
                 type="text"
                 name="state"
                 disabled={loading}
-                placeholder="e.g. Delhi"
+                placeholder="Delhi"
                 value={formData.state}
                 onChange={handleChange}
-                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                className="w-full px-3 py-1.5 text-xs bg-white text-neutral-900 border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 disabled:opacity-60 transition-colors placeholder:text-neutral-400"
               />
             </div>
           </div>
@@ -272,29 +268,29 @@ export function AdminRegister() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-bold text-xs shadow-md shadow-brand-500/25 transition-all flex items-center justify-center gap-2 mt-2"
+            className="w-full py-2 px-3 rounded-md bg-neutral-900 hover:bg-neutral-800 disabled:opacity-60 text-white font-medium text-xs shadow-2xs transition-colors flex items-center justify-center gap-1.5 mt-1"
           >
             {loading ? (
-              <span>Creating Admin Account...</span>
+              <span>Creating account...</span>
             ) : (
               <>
                 <span>Register & Access Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
-        <div className="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
-          <span>Already have an admin account? </span>
-          <Link to="/admin/login" className="font-bold text-brand-600 hover:text-brand-700">
+        <div className="text-center text-xs text-neutral-500 pt-2 border-t border-neutral-150">
+          <span>Already have an account? </span>
+          <Link to="/admin/login" className="font-medium text-neutral-900 hover:underline">
             Sign In here
           </Link>
         </div>
       </div>
 
-      <div className="text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} Library Sathi. Tenant Self-Service Platform.
+      <div className="text-center text-[11px] text-neutral-400 font-mono">
+        © {new Date().getFullYear()} LibrarySathi • Self-Service Platform
       </div>
     </div>
   );

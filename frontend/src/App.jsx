@@ -41,6 +41,7 @@ import { SuperAdminTenants } from './pages/superAdmin/SuperAdminTenants';
 import { SuperAdminPlans } from './pages/superAdmin/SuperAdminPlans';
 import { SuperAdminFeatures } from './pages/superAdmin/SuperAdminFeatures';
 import { SuperAdminSubscriptions } from './pages/superAdmin/SuperAdminSubscriptions';
+import { SuperAdminLeads } from './pages/superAdmin/SuperAdminLeads';
 
 export function App() {
   return (
@@ -111,6 +112,7 @@ export function App() {
       >
         <Route index element={<Navigate to="/super-admin/dashboard" replace />} />
         <Route path="dashboard" element={<SuperAdminDashboard />} />
+        <Route path="leads" element={<SuperAdminLeads />} />
         <Route path="tenants" element={<SuperAdminTenants />} />
         <Route path="plans" element={<SuperAdminPlans />} />
         <Route path="features" element={<SuperAdminFeatures />} />

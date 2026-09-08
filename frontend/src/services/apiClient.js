@@ -1817,6 +1817,78 @@ export const api = {
           return { success: false, message: `Network error: ${err.message}`, error: err.message };
         }
       }
+    },
+
+    demoRequests: {
+      async getAll(params = {}, token = null) {
+        const authToken = token || getStoredSuperAdminToken();
+        try {
+          const queryParams = new URLSearchParams();
+          if (params.status && params.status !== 'all') queryParams.set('status', params.status);
+          if (params.search) queryParams.set('search', params.search);
+          if (params.page) queryParams.set('page', params.page);
+          if (params.limit) queryParams.set('limit', params.limit);
+
+          const qs = queryParams.toString() ? `?${queryParams.toString()}` : '';
+          const headers = { 'Content-Type': 'application/json' };
+          if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+          const res = await fetch(`${BASE_URL}/super-admin/demo-request/all${qs}`, {
+            method: 'GET',
+            headers
+          });
+          return await res.json();
+        } catch (err) {
+          return { success: false, message: `Network error: ${err.message}`, error: err.message };
+        }
+      },
+
+      async updateStatus(id, data, token = null) {
+        const authToken = token || getStoredSuperAdminToken();
+        try {
+          const headers = { 'Content-Type': 'application/json' };
+          if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+          const res = await fetch(`${BASE_URL}/super-admin/demo-request/status/${id}`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify(typeof data === 'string' ? { status: data } : data)
+          });
+          return await res.json();
+        } catch (err) {
+          return { success: false, message: `Network error: ${err.message}`, error: err.message };
+        }
+      },
+
+      async delete(id, token = null) {
+        const authToken = token || getStoredSuperAdminToken();
+        try {
+          const headers = { 'Content-Type': 'application/json' };
+          if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+          const res = await fetch(`${BASE_URL}/super-admin/demo-request/delete/${id}`, {
+            method: 'DELETE',
+            headers
+          });
+          return await res.json();
+        } catch (err) {
+          return { success: false, message: `Network error: ${err.message}`, error: err.message };
+        }
+      }
+    }
+  },
+
+  // ─── PUBLIC INBOUND LEADS / DEMO ───────────────────
+  demo: {
+    async create(data) {
+      try {
+        const res = await fetch(`${BASE_URL}/super-admin/demo-request/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        return await res.json();
+      } catch (err) {
+        return { success: false, message: `Network error: ${err.message}`, error: err.message };
+      }
     }
   }
 };

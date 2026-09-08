@@ -232,14 +232,10 @@ export function SeatsManagement() {
       {/* Header & Quick Action Buttons */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Seat Matrix & Layout</h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live API (Port 5000)
-            </span>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold text-neutral-900 tracking-tight">Seat Matrix & Layout</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-neutral-500 mt-0.5">
             Configure visual desk allocations, status overrides, and bulk generation.
           </p>
         </div>
@@ -248,7 +244,7 @@ export function SeatsManagement() {
           <button
             onClick={loadData}
             disabled={loading}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-300 hover:border-slate-400 px-3.5 py-2 rounded-xl transition-colors disabled:opacity-50 shadow-xs"
+            className="flex items-center gap-1.5 text-xs font-medium text-neutral-700 hover:text-neutral-900 bg-white border border-neutral-200 hover:bg-neutral-50 px-3 py-1.5 rounded-md transition-colors disabled:opacity-50 shadow-2xs"
             title="Reload live seats from server"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -260,10 +256,10 @@ export function SeatsManagement() {
               setActionSuccess(null);
               setIsSingleSeatModalOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:border-brand-300 px-3.5 py-2 rounded-xl shadow-xs transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-neutral-700 hover:text-neutral-900 bg-white border border-neutral-200 hover:bg-neutral-50 px-3 py-1.5 rounded-md shadow-2xs transition-colors"
           >
-            <Plus className="w-4 h-4 text-brand-600" />
-            <span>Add Single Seat</span>
+            <Plus className="w-3.5 h-3.5 text-neutral-600" />
+            <span>Add Desk</span>
           </button>
           <button
             onClick={() => {
@@ -271,27 +267,27 @@ export function SeatsManagement() {
               setActionSuccess(null);
               setIsBulkSeatModalOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 px-4 py-2 rounded-xl shadow-sm transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 px-3.5 py-1.5 rounded-md shadow-2xs transition-colors"
           >
-            <Layers className="w-4 h-4" />
-            <span>Bulk Create Desks</span>
+            <Layers className="w-3.5 h-3.5" />
+            <span>Bulk Create</span>
           </button>
         </div>
       </div>
 
       {/* Notifications / Error Banners */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between text-rose-800 text-xs animate-in fade-in">
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded-md flex items-center justify-between text-rose-800 text-xs">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span className="font-medium">{error}</span>
           </div>
-          <button onClick={loadData} className="font-bold underline hover:no-underline">Retry</button>
+          <button onClick={loadData} className="font-medium underline hover:no-underline">Retry</button>
         </div>
       )}
 
       {actionError && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between text-rose-800 text-xs animate-in fade-in">
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded-md flex items-center justify-between text-rose-800 text-xs">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
             <span className="font-medium">{actionError}</span>
@@ -303,7 +299,7 @@ export function SeatsManagement() {
       )}
 
       {actionSuccess && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-emerald-800 text-xs animate-in fade-in">
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md flex items-center justify-between text-emerald-800 text-xs">
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             <span className="font-medium">{actionSuccess}</span>
@@ -315,13 +311,13 @@ export function SeatsManagement() {
       )}
 
       {/* Filter and Shift Controls */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-xs space-y-3.5">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
           {/* Shift Switcher */}
           {shifts.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-slate-400" /> Shift Info:
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-medium text-neutral-500 mr-1 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-neutral-400" /> Shift:
               </span>
               {shifts.map((shift) => {
                 const isSelected = shift._id === selectedShiftId;
@@ -331,10 +327,10 @@ export function SeatsManagement() {
                     onClick={() => {
                       setSelectedShiftId(shift._id);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                       isSelected
-                        ? 'bg-brand-600 text-white shadow-sm shadow-brand-500/30'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-neutral-900 text-white shadow-2xs'
+                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                     }`}
                   >
                     {shift.name} ({shift.startTime} - {shift.endTime})
@@ -347,18 +343,18 @@ export function SeatsManagement() {
           {/* Floor & Status Switchers */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
-                <Layers className="w-3.5 h-3.5 text-slate-400" /> Floor:
+              <span className="text-xs font-medium text-neutral-500 flex items-center gap-1">
+                <Layers className="w-3.5 h-3.5 text-neutral-400" /> Floor:
               </span>
               <div className="flex items-center gap-1">
                 {floorList.map((f) => (
                   <button
                     key={f}
                     onClick={() => setSelectedFloor(f)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase transition-colors ${
+                    className={`px-2 py-0.5 rounded text-xs font-medium uppercase transition-colors ${
                       selectedFloor === f
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-neutral-900 text-white'
+                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                     }`}
                   >
                     {f === 'all' ? 'All' : f}
@@ -368,13 +364,13 @@ export function SeatsManagement() {
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
-                <Filter className="w-3.5 h-3.5 text-slate-400" /> Status:
+              <span className="text-xs font-medium text-neutral-500 flex items-center gap-1">
+                <Filter className="w-3.5 h-3.5 text-neutral-400" /> Status:
               </span>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="text-xs font-medium px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="text-xs font-medium px-2 py-1 bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900"
               >
                 <option value="all">All Statuses</option>
                 <option value="available">Available</option>
@@ -387,27 +383,27 @@ export function SeatsManagement() {
         </div>
 
         {/* Legend & Summary */}
-        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4 text-xs">
-          <div className="text-slate-600 font-medium">
-            Showing <strong className="text-slate-900">{filteredSeats.length}</strong> of <strong className="text-slate-900">{seats.length}</strong> total desks
-            {currentShift && <span> for <strong className="text-brand-700">{currentShift.name}</strong></span>}
+        <div className="pt-2.5 border-t border-neutral-150 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="text-neutral-500">
+            Showing <strong className="text-neutral-900 font-mono">{filteredSeats.length}</strong> of <strong className="text-neutral-900 font-mono">{seats.length}</strong> total desks
+            {currentShift && <span> for <strong className="text-neutral-900">{currentShift.name}</strong></span>}
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-1.5 text-emerald-700 font-semibold">
-              <span className="w-3 h-3 rounded-full bg-emerald-500" />
+          <div className="flex flex-wrap items-center gap-3.5">
+            <div className="flex items-center gap-1.5 text-emerald-700 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <span>Available ({availableCount})</span>
             </div>
-            <div className="flex items-center gap-1.5 text-brand-700 font-semibold">
-              <span className="w-3 h-3 rounded-full bg-brand-600" />
+            <div className="flex items-center gap-1.5 text-neutral-800 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-neutral-900" />
               <span>Occupied ({occupiedCount})</span>
             </div>
-            <div className="flex items-center gap-1.5 text-amber-700 font-semibold">
-              <span className="w-3 h-3 rounded-full bg-amber-500" />
+            <div className="flex items-center gap-1.5 text-amber-700 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
               <span>Reserved ({reservedCount})</span>
             </div>
-            <div className="flex items-center gap-1.5 text-rose-700 font-semibold">
-              <span className="w-3 h-3 rounded-full bg-rose-500" />
+            <div className="flex items-center gap-1.5 text-rose-700 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
               <span>Maintenance ({maintenanceCount})</span>
             </div>
           </div>
@@ -415,29 +411,29 @@ export function SeatsManagement() {
       </div>
 
       {/* Visual Seat Grid */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+      <div className="bg-white p-5 rounded-lg border border-neutral-200 shadow-xs">
         {loading ? (
-          <div className="py-16 text-center text-slate-400">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto text-brand-600 mb-2" />
-            <p className="text-xs font-semibold">Loading live seat layout...</p>
+          <div className="py-16 text-center text-neutral-400">
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto text-neutral-500 mb-2" />
+            <p className="text-xs">Loading seat matrix...</p>
           </div>
         ) : filteredSeats.length === 0 ? (
-          <div className="py-16 text-center text-slate-400">
-            <Armchair className="w-12 h-12 mx-auto text-slate-300 mb-2" />
-            <p className="text-sm font-bold text-slate-700">No seats found</p>
-            <p className="text-xs text-slate-400 mt-1">
+          <div className="py-16 text-center text-neutral-400">
+            <Armchair className="w-10 h-10 mx-auto text-neutral-300 mb-2" />
+            <p className="text-sm font-semibold text-neutral-700">No seats found</p>
+            <p className="text-xs text-neutral-400 mt-0.5">
               Create seats singly or generate them in bulk to view them on the matrix.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2.5">
             {filteredSeats.map((seat) => {
               const status = seat.status || 'available';
               const isSelected = selectedSeat?._id === seat._id;
 
-              let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100";
+              let badgeColor = "bg-white text-neutral-800 border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50";
               if (status === 'occupied') {
-                badgeColor = "bg-brand-50 text-brand-700 border-brand-200 hover:bg-brand-100";
+                badgeColor = "bg-neutral-100 text-neutral-900 border-neutral-300 font-semibold";
               } else if (status === 'reserved') {
                 badgeColor = "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100";
               } else if (status === 'maintenance') {
@@ -448,14 +444,14 @@ export function SeatsManagement() {
                 <button
                   key={seat._id}
                   onClick={() => setSelectedSeat(seat)}
-                  className={`h-16 rounded-xl border p-2 flex flex-col items-center justify-center transition-all cursor-pointer shadow-xs ${badgeColor} ${
-                    isSelected ? 'ring-2 ring-brand-600 ring-offset-2 scale-105' : ''
+                  className={`h-14 rounded-md border p-1.5 flex flex-col items-center justify-center transition-colors cursor-pointer shadow-2xs ${badgeColor} ${
+                    isSelected ? 'ring-2 ring-neutral-900 border-neutral-900' : ''
                   }`}
                 >
-                  <span className="text-xs font-mono font-extrabold">{seat.seatNumber}</span>
-                  <span className="text-[10px] font-semibold capitalize mt-0.5 opacity-90">{status}</span>
-                  <span className="text-[9px] text-slate-400 font-mono">
-                    {seat.floor ? `F:${seat.floor}` : 'Ground'}
+                  <span className="text-xs font-mono font-bold">{seat.seatNumber}</span>
+                  <span className="text-[9px] capitalize text-neutral-500 mt-0.5">{status}</span>
+                  <span className="text-[8px] text-neutral-400 font-mono">
+                    {seat.floor ? `F:${seat.floor}` : 'G'}
                   </span>
                 </button>
               );
@@ -466,24 +462,24 @@ export function SeatsManagement() {
 
       {/* Seat Inspector Drawer / Popover */}
       {selectedSeat && (
-        <div className="bg-white p-5 rounded-2xl border border-brand-200 shadow-md animate-in fade-in flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-lg border border-neutral-200 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 font-mono font-extrabold flex items-center justify-center text-base shrink-0">
+            <div className="w-10 h-10 rounded-md bg-neutral-100 text-neutral-900 font-mono font-bold flex items-center justify-center text-sm shrink-0 border border-neutral-200">
               {selectedSeat.seatNumber}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-base font-bold text-slate-900">
-                  Desk {selectedSeat.seatNumber} (Floor: {selectedSeat.floor || 'Ground'}{selectedSeat.section ? `, Sec: ${selectedSeat.section}` : ''})
+                <h3 className="text-sm font-bold text-neutral-900">
+                  Desk {selectedSeat.seatNumber} (Floor: {selectedSeat.floor || 'Ground'}{selectedSeat.section ? `, Section: ${selectedSeat.section}` : ''})
                 </h3>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${
+                <span className={`text-[10px] font-medium font-mono px-2 py-0.5 rounded-full border capitalize ${
                   selectedSeat.status === 'occupied'
-                    ? 'bg-brand-50 text-brand-700 border border-brand-200'
+                    ? 'bg-neutral-100 text-neutral-800 border-neutral-300'
                     : selectedSeat.status === 'reserved'
-                    ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                    ? 'bg-amber-50 text-amber-800 border-amber-200'
                     : selectedSeat.status === 'maintenance'
-                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                    : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                 }`}>
                   {selectedSeat.status || 'available'}
                 </span>
@@ -491,56 +487,56 @@ export function SeatsManagement() {
               
               {/* Assigned Student Details if populated */}
               {selectedSeat.reservedFor ? (
-                <div className="flex items-center gap-1.5 text-xs text-brand-800 mt-1 font-medium">
-                  <User className="w-3.5 h-3.5 text-brand-600" />
+                <div className="flex items-center gap-1.5 text-xs text-neutral-700 mt-1">
+                  <User className="w-3.5 h-3.5 text-neutral-500" />
                   <span>
                     Occupied by: {selectedSeat.reservedFor.firstName} {selectedSeat.reservedFor.lastName}
                     {selectedSeat.reservedFor.studentId && ` (${selectedSeat.reservedFor.studentId})`}
                   </span>
                 </div>
               ) : (
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {currentShift ? `Selected shift: ${currentShift.name} (${currentShift.startTime} - ${currentShift.endTime})` : 'Unassigned'}
+                <p className="text-xs text-neutral-500 mt-0.5">
+                  {currentShift ? `Shift window: ${currentShift.name} (${currentShift.startTime} - ${currentShift.endTime})` : 'Unassigned'}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-500">Quick Status Override:</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs text-neutral-500 mr-1">Override Status:</span>
             <button
               onClick={() => handleToggleSeatStatus(selectedSeat._id, 'available')}
               disabled={actionLoading || selectedSeat.status === 'available'}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 disabled:opacity-40 transition-colors"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 disabled:opacity-40 transition-colors"
             >
               Available
             </button>
             <button
               onClick={() => handleToggleSeatStatus(selectedSeat._id, 'reserved')}
               disabled={actionLoading || selectedSeat.status === 'reserved'}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-800 hover:bg-amber-200 disabled:opacity-40 transition-colors"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-40 transition-colors"
             >
               Reserved
             </button>
             <button
               onClick={() => handleToggleSeatStatus(selectedSeat._id, 'maintenance')}
               disabled={actionLoading || selectedSeat.status === 'maintenance'}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-100 text-rose-800 hover:bg-rose-200 disabled:opacity-40 transition-colors"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 disabled:opacity-40 transition-colors"
             >
               Maintenance
             </button>
             <button
               onClick={() => handleDeleteSeat(selectedSeat._id)}
               disabled={actionLoading}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors flex items-center gap-1"
+              className="px-2.5 py-1 rounded-md text-xs font-medium text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors flex items-center gap-1"
               title="Delete this seat"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-3 h-3" />
               <span>Delete</span>
             </button>
             <button
               onClick={() => setSelectedSeat(null)}
-              className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg ml-1"
+              className="p-1 text-neutral-400 hover:text-neutral-700 rounded-md ml-1"
               title="Close drawer"
             >
               <X className="w-4 h-4" />
@@ -551,61 +547,61 @@ export function SeatsManagement() {
 
       {/* Modal: Add Single Seat */}
       {isSingleSeatModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-slate-900">Add New Seat</h3>
-              <button onClick={() => setIsSingleSeatModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-lg p-5 max-w-sm w-full shadow-dropdown border border-neutral-200">
+            <div className="flex items-center justify-between mb-3.5">
+              <h3 className="text-sm font-bold text-neutral-900">Add New Desk</h3>
+              <button onClick={() => setIsSingleSeatModalOpen(false)} className="text-neutral-400 hover:text-neutral-700 p-1">
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleCreateSingleSeat} className="space-y-4">
+            <form onSubmit={handleCreateSingleSeat} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Seat Number *</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Desk number *</label>
                 <input
                   required
                   type="text"
-                  placeholder="e.g. S-41"
+                  placeholder="S-41"
                   value={newSeatNumber}
                   onChange={(e) => setNewSeatNumber(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 font-mono placeholder:text-neutral-400"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Floor Level</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Floor level</label>
                 <input
                   type="text"
-                  placeholder="e.g. Ground, 1, 2"
+                  placeholder="Ground, 1, 2"
                   value={newSeatFloor}
                   onChange={(e) => setNewSeatFloor(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 placeholder:text-neutral-400"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Section (Optional)</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Section (Optional)</label>
                 <input
                   type="text"
-                  placeholder="e.g. Hall A, Silent Wing"
+                  placeholder="Hall A, Silent Wing"
                   value={newSeatSection}
                   onChange={(e) => setNewSeatSection(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 placeholder:text-neutral-400"
                 />
               </div>
-              <div className="pt-2 flex justify-end gap-2">
+              <div className="pt-2 flex justify-end gap-2 border-t border-neutral-150">
                 <button
                   type="button"
                   onClick={() => setIsSingleSeatModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 rounded-md"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded-md shadow-2xs disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  {actionLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-                  <span>Create Seat</span>
+                  {actionLoading && <RefreshCw className="w-3 h-3 animate-spin" />}
+                  <span>Create Desk</span>
                 </button>
               </div>
             </form>
@@ -615,85 +611,85 @@ export function SeatsManagement() {
 
       {/* Modal: Bulk Create Seats */}
       {isBulkSeatModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-slate-900">Bulk Generate Seats</h3>
-              <button onClick={() => setIsBulkSeatModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-lg p-5 max-w-sm w-full shadow-dropdown border border-neutral-200">
+            <div className="flex items-center justify-between mb-3.5">
+              <h3 className="text-sm font-bold text-neutral-900">Bulk Generate Desks</h3>
+              <button onClick={() => setIsBulkSeatModalOpen(false)} className="text-neutral-400 hover:text-neutral-700 p-1">
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleBulkCreateSeats} className="space-y-4">
+            <form onSubmit={handleBulkCreateSeats} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Seat Prefix *</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Prefix *</label>
                 <input
                   required
                   type="text"
-                  placeholder="e.g. S- or A-"
+                  placeholder="S- or A-"
                   value={bulkPrefix}
                   onChange={(e) => setBulkPrefix(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 font-mono placeholder:text-neutral-400"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Start No. *</label>
+                  <label className="text-xs font-medium text-neutral-700 block mb-1">Start No. *</label>
                   <input
                     required
                     type="number"
                     min="1"
                     value={bulkStart}
                     onChange={(e) => setBulkStart(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono"
+                    className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">End No. *</label>
+                  <label className="text-xs font-medium text-neutral-700 block mb-1">End No. *</label>
                   <input
                     required
                     type="number"
                     min="1"
                     value={bulkEnd}
                     onChange={(e) => setBulkEnd(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono"
+                    className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 font-mono"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Floor Level</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Floor Level</label>
                 <input
                   type="text"
-                  placeholder="e.g. Ground, 1, 2"
+                  placeholder="Ground, 1, 2"
                   value={bulkFloor}
                   onChange={(e) => setBulkFloor(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 placeholder:text-neutral-400"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Section (Optional)</label>
+                <label className="text-xs font-medium text-neutral-700 block mb-1">Section (Optional)</label>
                 <input
                   type="text"
-                  placeholder="e.g. Hall A"
+                  placeholder="Hall A"
                   value={bulkSection}
                   onChange={(e) => setBulkSection(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-900 placeholder:text-neutral-400"
                 />
               </div>
-              <div className="pt-2 flex justify-end gap-2">
+              <div className="pt-2 flex justify-end gap-2 border-t border-neutral-150">
                 <button
                   type="button"
                   onClick={() => setIsBulkSeatModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 rounded-md"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading || Number(bulkEnd) < Number(bulkStart)}
-                  className="px-4 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-sm disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded-md shadow-2xs disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  {actionLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-                  <span>Generate {Math.max(0, Number(bulkEnd) - Number(bulkStart) + 1)} Seats</span>
+                  {actionLoading && <RefreshCw className="w-3 h-3 animate-spin" />}
+                  <span>Generate {Math.max(0, Number(bulkEnd) - Number(bulkStart) + 1)} Desks</span>
                 </button>
               </div>
             </form>

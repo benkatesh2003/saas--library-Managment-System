@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 5000;
  */
 const startServer = async () => {
   try {
-    await connectDB();
+    // Connect to database in background so server listens immediately
+    connectDB().catch(err => {
+      console.warn('MongoDB connection pending:', err.message);
+    });
     
     // Redis is optional — log warning if unavailable
     try {
