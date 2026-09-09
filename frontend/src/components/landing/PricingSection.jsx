@@ -58,13 +58,13 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
                 key={plan._id}
                 className={`rounded-lg p-6 flex flex-col justify-between transition-all relative ${
                   plan.isPopular
-                    ? 'bg-[#0A0A0A] text-white border border-neutral-800 shadow-sm'
+                    ? 'bg-neutral-900 text-white border-2 border-neutral-700 shadow-md ring-1 ring-white/10'
                     : 'bg-white text-neutral-900 border border-neutral-200 shadow-2xs hover:border-neutral-400'
                 }`}
               >
                 {plan.isPopular && (
-                  <div className="absolute -top-3 left-6 bg-white text-neutral-900 text-[10px] font-mono font-semibold px-2 py-0.5 rounded border border-neutral-200 shadow-2xs">
-                    POPULAR
+                  <div className="absolute -top-3 left-6 bg-white text-neutral-950 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded border border-neutral-300 shadow-xs">
+                    MOST POPULAR
                   </div>
                 )}
 
@@ -72,13 +72,13 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-base font-semibold tracking-tight">{plan.name}</h3>
                     <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                      plan.isPopular ? 'bg-neutral-900 text-neutral-300 border-neutral-800' : 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                      plan.isPopular ? 'bg-neutral-800 text-neutral-200 border-neutral-700' : 'bg-neutral-100 text-neutral-700 border-neutral-200'
                     }`}>
                       {plan.maxSeats} Desks
                     </span>
                   </div>
 
-                  <p className={`text-xs leading-relaxed mb-5 ${plan.isPopular ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                  <p className={`text-xs leading-relaxed mb-5 ${plan.isPopular ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     {plan.description}
                   </p>
 
@@ -87,7 +87,7 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
                       <span className="text-3xl font-bold font-mono tracking-tight">
                         {formatINR(price)}
                       </span>
-                      <span className={`text-xs ${plan.isPopular ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                      <span className={`text-xs ${plan.isPopular ? 'text-neutral-300' : 'text-neutral-500'}`}>
                         /mo
                       </span>
                     </div>
@@ -98,13 +98,13 @@ export function PricingSection({ onOpenDemoModal, onSelectPlan }) {
 
                   {/* Feature List */}
                   <div className="space-y-2.5 mb-6">
-                    <div className={`text-[11px] font-mono uppercase tracking-wider ${plan.isPopular ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <div className={`text-[11px] font-mono uppercase tracking-wider ${plan.isPopular ? 'text-neutral-300' : 'text-neutral-600'}`}>
                       Features:
                     </div>
                     {plan.features.map((feat, i) => (
                       <div key={i} className="flex items-start gap-2 text-xs">
-                        <Check className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${plan.isPopular ? 'text-neutral-300' : 'text-neutral-700'}`} />
-                        <span className={plan.isPopular ? 'text-neutral-300' : 'text-neutral-600'}>{feat}</span>
+                        <Check className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${plan.isPopular ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                        <span className={plan.isPopular ? 'text-neutral-200' : 'text-neutral-600'}>{feat}</span>
                       </div>
                     ))}
                   </div>

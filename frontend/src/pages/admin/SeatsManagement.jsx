@@ -394,8 +394,8 @@ export function SeatsManagement() {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <span>Available ({availableCount})</span>
             </div>
-            <div className="flex items-center gap-1.5 text-neutral-800 font-medium">
-              <span className="w-2.5 h-2.5 rounded-full bg-neutral-900" />
+            <div className="flex items-center gap-1.5 text-blue-700 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
               <span>Occupied ({occupiedCount})</span>
             </div>
             <div className="flex items-center gap-1.5 text-amber-700 font-medium">
@@ -431,26 +431,26 @@ export function SeatsManagement() {
               const status = seat.status || 'available';
               const isSelected = selectedSeat?._id === seat._id;
 
-              let badgeColor = "bg-white text-neutral-800 border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50";
+              let deskClass = "desk-card-available";
               if (status === 'occupied') {
-                badgeColor = "bg-neutral-100 text-neutral-900 border-neutral-300 font-semibold";
+                deskClass = "desk-card-occupied";
               } else if (status === 'reserved') {
-                badgeColor = "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100";
+                deskClass = "desk-card-reserved";
               } else if (status === 'maintenance') {
-                badgeColor = "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100";
+                deskClass = "desk-card-maintenance";
               }
 
               return (
                 <button
                   key={seat._id}
                   onClick={() => setSelectedSeat(seat)}
-                  className={`h-14 rounded-md border p-1.5 flex flex-col items-center justify-center transition-colors cursor-pointer shadow-2xs ${badgeColor} ${
-                    isSelected ? 'ring-2 ring-neutral-900 border-neutral-900' : ''
+                  className={`h-14 rounded-md border p-1.5 flex flex-col items-center justify-center transition-colors cursor-pointer shadow-2xs desk-card ${deskClass} ${
+                    isSelected ? 'is-selected' : ''
                   }`}
                 >
-                  <span className="text-xs font-mono font-bold">{seat.seatNumber}</span>
-                  <span className="text-[9px] capitalize text-neutral-500 mt-0.5">{status}</span>
-                  <span className="text-[8px] text-neutral-400 font-mono">
+                  <span className="text-xs font-mono font-bold desk-num">{seat.seatNumber}</span>
+                  <span className="text-[9px] capitalize font-semibold mt-0.5 desk-status">{status}</span>
+                  <span className="text-[8px] font-mono opacity-75 mt-0.5">
                     {seat.floor ? `F:${seat.floor}` : 'G'}
                   </span>
                 </button>
@@ -472,11 +472,11 @@ export function SeatsManagement() {
                 <h3 className="text-sm font-bold text-neutral-900">
                   Desk {selectedSeat.seatNumber} (Floor: {selectedSeat.floor || 'Ground'}{selectedSeat.section ? `, Section: ${selectedSeat.section}` : ''})
                 </h3>
-                <span className={`text-[10px] font-medium font-mono px-2 py-0.5 rounded-full border capitalize ${
+                <span className={`text-[10px] font-semibold font-mono px-2 py-0.5 rounded-full border capitalize ${
                   selectedSeat.status === 'occupied'
-                    ? 'bg-neutral-100 text-neutral-800 border-neutral-300'
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
                     : selectedSeat.status === 'reserved'
-                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
                     : selectedSeat.status === 'maintenance'
                     ? 'bg-rose-50 text-rose-700 border-rose-200'
                     : 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -514,7 +514,7 @@ export function SeatsManagement() {
             <button
               onClick={() => handleToggleSeatStatus(selectedSeat._id, 'reserved')}
               disabled={actionLoading || selectedSeat.status === 'reserved'}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 disabled:opacity-40 transition-colors"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 disabled:opacity-40 transition-colors"
             >
               Reserved
             </button>

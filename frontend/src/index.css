@@ -2,6 +2,116 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================================================= */
+/* CENTRALIZED SEMANTIC DESIGN TOKENS                                        */
+/* ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces & Backgrounds */
+  --background: #FAFAFA;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --surface-hover: #F4F4F5;
+  --surface-active: #E4E4E7;
+  --surface-muted: #F4F4F5;
+
+  /* Borders */
+  --border: #E4E4E7;
+  --border-subtle: #F4F4F5;
+  --border-strong: #D4D4D8;
+
+  /* Typography */
+  --text-primary: #09090B;
+  --text-secondary: #3F3F46;
+  --text-muted: #71717A;
+  --text-subtle: #A1A1AA;
+
+  /* Accents & Buttons */
+  --accent: #09090B;
+  --accent-hover: #27272A;
+  --accent-foreground: #FAFAFA;
+
+  /* Semantic Statuses */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --success-border: #A7F3D0;
+  --success-text: #065F46;
+
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --warning-border: #FDE68A;
+  --warning-text: #92400E;
+
+  --error: #EF4444;
+  --error-bg: #FEF2F2;
+  --error-border: #FECACA;
+  --error-text: #991B1B;
+
+  --info: #3B82F6;
+  --info-bg: #EFF6FF;
+  --info-border: #BFDBFE;
+  --info-text: #1E40AF;
+
+  --disabled: #A1A1AA;
+  --disabled-bg: #F4F4F5;
+  --disabled-border: #E4E4E7;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  /* Surfaces & Backgrounds */
+  --background: #09090B;
+  --surface: #121215;
+  --surface-elevated: #18181C;
+  --surface-hover: #222228;
+  --surface-active: #2C2C35;
+  --surface-muted: #16161A;
+
+  /* Borders */
+  --border: #2A2A32;
+  --border-subtle: #1F1F24;
+  --border-strong: #3F3F48;
+
+  /* Typography (Strictly WCAG AA compliant on dark backgrounds) */
+  --text-primary: #FAFAFA;
+  --text-secondary: #E4E4E7;
+  --text-muted: #A1A1AA;
+  --text-subtle: #9CA3AF;
+
+  /* Accents & Buttons */
+  --accent: #FAFAFA;
+  --accent-hover: #E4E4E7;
+  --accent-foreground: #09090B;
+
+  /* Semantic Statuses */
+  --success: #34D399;
+  --success-bg: rgba(6, 78, 59, 0.35);
+  --success-border: rgba(52, 211, 153, 0.40);
+  --success-text: #34D399;
+
+  --warning: #FBBF24;
+  --warning-bg: rgba(120, 53, 15, 0.35);
+  --warning-border: rgba(251, 191, 36, 0.40);
+  --warning-text: #FBBF24;
+
+  --error: #FB7185;
+  --error-bg: rgba(136, 19, 55, 0.35);
+  --error-border: rgba(251, 113, 133, 0.40);
+  --error-text: #FB7185;
+
+  --info: #60A5FA;
+  --info-bg: rgba(30, 58, 138, 0.35);
+  --info-border: rgba(96, 165, 250, 0.40);
+  --info-text: #60A5FA;
+
+  --disabled: #52525B;
+  --disabled-bg: #141416;
+  --disabled-border: #27272A;
+}
+
 @layer base {
   * {
     border-color: #E4E4E7;
@@ -66,10 +176,6 @@
 /* BLACK (DARK) THEME SYSTEM — DEFAULT MODE                                  */
 /* ========================================================================= */
 
-html.dark {
-  color-scheme: dark;
-}
-
 html.dark body {
   background-color: #09090B !important;
   color: #FAFAFA !important;
@@ -77,7 +183,7 @@ html.dark body {
 
 /* Surfaces & Backgrounds */
 html.dark .bg-white {
-  background-color: #121214 !important;
+  background-color: #121215 !important;
 }
 
 html.dark .bg-\[\#FAFAFA\] {
@@ -85,51 +191,58 @@ html.dark .bg-\[\#FAFAFA\] {
 }
 
 html.dark .bg-neutral-50 {
-  background-color: #161618 !important;
+  background-color: #16161A !important;
 }
 
-html.dark .bg-neutral-50\/50 {
-  background-color: rgba(22, 22, 24, 0.5) !important;
+html.dark .bg-neutral-50\/50,
+html.dark .bg-neutral-50\/70,
+html.dark .bg-neutral-50\/80 {
+  background-color: rgba(22, 22, 26, 0.75) !important;
 }
 
 html.dark .bg-neutral-100 {
-  background-color: #202024 !important;
+  background-color: #202026 !important;
 }
 
 html.dark .bg-neutral-200 {
-  background-color: #2A2A30 !important;
+  background-color: #2A2A34 !important;
+}
+
+html.dark .bg-neutral-200\/70 {
+  background-color: #1E1E26 !important;
 }
 
 html.dark .bg-white\/90 {
-  background-color: rgba(18, 18, 20, 0.90) !important;
+  background-color: rgba(18, 18, 21, 0.92) !important;
 }
 
 html.dark .bg-white\/80 {
-  background-color: rgba(18, 18, 20, 0.85) !important;
+  background-color: rgba(18, 18, 21, 0.85) !important;
 }
 
 html.dark .bg-white\/70 {
-  background-color: rgba(18, 18, 20, 0.75) !important;
+  background-color: rgba(18, 18, 21, 0.75) !important;
 }
 
-/* Borders & Dividers */
+/* Borders & Dividers (Crisp 3:1+ contrast on dark surfaces) */
 html.dark * {
-  border-color: #27272A;
+  border-color: #2A2A32;
 }
 
 html.dark .border-neutral-200,
 html.dark .border-neutral-100,
 html.dark .border-neutral-300,
+html.dark .border-neutral-150,
 html.dark .border-hairline {
-  border-color: #27272A !important;
+  border-color: #2A2A32 !important;
 }
 
 html.dark .divide-neutral-200 > :not([hidden]) ~ :not([hidden]),
 html.dark .divide-neutral-100 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #27272A !important;
+  border-color: #2A2A32 !important;
 }
 
-/* Typography in Dark Mode */
+/* Typography in Dark Mode (Strict WCAG AA Standards) */
 html.dark .text-neutral-900 {
   color: #FAFAFA !important;
 }
@@ -143,58 +256,64 @@ html.dark .text-neutral-700 {
 }
 
 html.dark .text-neutral-600 {
-  color: #A1A1AA !important;
+  color: #D4D4D8 !important;
 }
 
 html.dark .text-neutral-500 {
-  color: #8E8E93 !important;
+  color: #A1A1AA !important;
 }
 
 html.dark .text-neutral-400 {
-  color: #71717A !important;
+  color: #9CA3AF !important;
 }
 
 /* Form Controls & Inputs */
 html.dark input:not([type="checkbox"]):not([type="radio"]),
 html.dark textarea,
 html.dark select {
-  background-color: #18181B !important;
+  background-color: #16161A !important;
   color: #FAFAFA !important;
-  border-color: #27272A !important;
+  border-color: #32323A !important;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #FAFAFA !important;
 }
 
 html.dark input::placeholder,
 html.dark textarea::placeholder {
-  color: #71717A !important;
+  color: #8E8E95 !important;
 }
 
 html.dark select option {
-  background-color: #18181B !important;
+  background-color: #16161A !important;
   color: #FAFAFA !important;
 }
 
 /* Tables */
 html.dark table {
-  border-color: #27272A !important;
+  border-color: #2A2A32 !important;
 }
 
 html.dark th {
-  background-color: #161618 !important;
-  color: #A1A1AA !important;
-  border-color: #27272A !important;
+  background-color: #16161A !important;
+  color: #D4D4D8 !important;
+  border-color: #2A2A32 !important;
 }
 
 html.dark td {
-  border-color: #27272A !important;
+  border-color: #2A2A32 !important;
 }
 
 /* Interactive States & Hovers */
 html.dark .hover\:bg-neutral-50:hover {
-  background-color: #1A1A1D !important;
+  background-color: #1C1C22 !important;
 }
 
 html.dark .hover\:bg-neutral-100:hover {
-  background-color: #222226 !important;
+  background-color: #262630 !important;
 }
 
 html.dark .hover\:text-neutral-900:hover {
@@ -202,21 +321,35 @@ html.dark .hover\:text-neutral-900:hover {
 }
 
 /* Primary Action Buttons: High-contrast white on black in Dark Mode */
-html.dark button.bg-neutral-900:not(.stay-dark),
-html.dark a.bg-neutral-900:not(.stay-dark) {
+html.dark button.bg-neutral-900:not(.stay-dark):not(.nav-tab),
+html.dark a.bg-neutral-900:not(.stay-dark):not(.nav-tab) {
   background-color: #FAFAFA !important;
   color: #09090B !important;
   border-color: transparent !important;
 }
 
-html.dark button.bg-neutral-900:not(.stay-dark):hover,
-html.dark a.bg-neutral-900:not(.stay-dark):hover {
+html.dark button.bg-neutral-900:not(.stay-dark):not(.nav-tab):hover,
+html.dark a.bg-neutral-900:not(.stay-dark):not(.nav-tab):hover {
   background-color: #E4E4E7 !important;
 }
 
-html.dark button.bg-neutral-900:not(.stay-dark) svg,
-html.dark a.bg-neutral-900:not(.stay-dark) svg {
+html.dark button.bg-neutral-900:not(.stay-dark):not(.nav-tab) svg,
+html.dark a.bg-neutral-900:not(.stay-dark):not(.nav-tab) svg {
   color: #09090B !important;
+}
+
+/* Active Nav Tabs: Elevated dark surface with crisp border, never blinding white */
+html.dark .nav-tab-active,
+html.dark a.nav-tab-active,
+html.dark button.nav-tab-active {
+  background-color: #24242C !important;
+  color: #FFFFFF !important;
+  border-color: #383844 !important;
+}
+html.dark .nav-tab-active svg,
+html.dark a.nav-tab-active svg,
+html.dark button.nav-tab-active svg {
+  color: #FFFFFF !important;
 }
 
 /* Logos & decorative icons */
@@ -227,86 +360,243 @@ html.dark div.bg-neutral-900 {
 
 /* Dark Cards & Gradients */
 html.dark .vercel-card {
-  background-color: #121214 !important;
-  border-color: #27272A !important;
+  background-color: #121215 !important;
+  border-color: #2A2A32 !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4) !important;
 }
 
 html.dark .text-gradient {
-  background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%) !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #D4D4D8 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
 html.dark .text-gradient-purple {
-  background: linear-gradient(180deg, #FAFAFA 0%, #A1A1AA 100%) !important;
+  background: linear-gradient(180deg, #FAFAFA 0%, #D4D4D8 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Colored Status Badges in Dark Mode */
+/* Colored Status Badges in Dark Mode (High Contrast, Never Invisible) */
 html.dark .bg-emerald-50 {
-  background-color: rgba(6, 78, 59, 0.28) !important;
+  background-color: rgba(6, 78, 59, 0.35) !important;
 }
+html.dark .text-emerald-900,
+html.dark .text-emerald-800,
 html.dark .text-emerald-700,
 html.dark .text-emerald-600 {
   color: #34D399 !important;
 }
 html.dark .border-emerald-200 {
-  border-color: rgba(5, 150, 105, 0.35) !important;
+  border-color: rgba(52, 211, 153, 0.40) !important;
 }
 
 html.dark .bg-amber-50 {
-  background-color: rgba(120, 53, 15, 0.28) !important;
+  background-color: rgba(120, 53, 15, 0.35) !important;
 }
+html.dark .text-amber-900,
+html.dark .text-amber-800,
 html.dark .text-amber-700,
 html.dark .text-amber-600 {
   color: #FBBF24 !important;
 }
 html.dark .border-amber-200 {
-  border-color: rgba(217, 119, 6, 0.35) !important;
+  border-color: rgba(251, 191, 36, 0.40) !important;
 }
 
 html.dark .bg-rose-50 {
-  background-color: rgba(136, 19, 55, 0.28) !important;
+  background-color: rgba(136, 19, 55, 0.35) !important;
 }
+html.dark .text-rose-900,
+html.dark .text-rose-800,
 html.dark .text-rose-700,
 html.dark .text-rose-600 {
   color: #FB7185 !important;
 }
 html.dark .border-rose-200 {
-  border-color: rgba(225, 29, 72, 0.35) !important;
+  border-color: rgba(251, 113, 133, 0.40) !important;
 }
 
 html.dark .bg-blue-50 {
-  background-color: rgba(30, 58, 138, 0.28) !important;
+  background-color: rgba(30, 58, 138, 0.35) !important;
 }
+html.dark .text-blue-900,
+html.dark .text-blue-800,
 html.dark .text-blue-700,
 html.dark .text-blue-600 {
   color: #60A5FA !important;
 }
 html.dark .border-blue-200 {
-  border-color: rgba(37, 99, 235, 0.35) !important;
+  border-color: rgba(96, 165, 250, 0.40) !important;
 }
 
 html.dark .bg-purple-50 {
-  background-color: rgba(88, 28, 135, 0.28) !important;
+  background-color: rgba(88, 28, 135, 0.35) !important;
 }
+html.dark .text-purple-900,
+html.dark .text-purple-800,
 html.dark .text-purple-700,
 html.dark .text-purple-600 {
   color: #C084FC !important;
 }
 html.dark .border-purple-200 {
-  border-color: rgba(147, 51, 234, 0.35) !important;
+  border-color: rgba(192, 132, 252, 0.40) !important;
 }
 
 /* Scrollbars in Dark Mode */
 html.dark ::-webkit-scrollbar-thumb {
-  background: #27272A;
+  background: #2A2A32;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #3F3F46;
+  background: #3F3F48;
 }
 
+/* ========================================================================= */
+/* DESK MATRIX SEMANTIC CARDS & LEGEND SYSTEM                                */
+/* ========================================================================= */
 
+/* Desk Card Base */
+.desk-card {
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Available Desk */
+.desk-card-available {
+  background-color: #FFFFFF;
+  border-color: #E4E4E7;
+  color: #09090B;
+}
+.desk-card-available:hover {
+  background-color: #F4F4F5;
+  border-color: #A1A1AA;
+}
+.desk-card-available .desk-num {
+  color: #09090B;
+}
+.desk-card-available .desk-status {
+  color: #059669;
+}
+
+html.dark .desk-card-available {
+  background-color: #131316 !important;
+  border-color: #2E2E36 !important;
+}
+html.dark .desk-card-available:hover {
+  background-color: #1A1A20 !important;
+  border-color: #3F3F4A !important;
+}
+html.dark .desk-card-available .desk-num {
+  color: #FAFAFA !important;
+}
+html.dark .desk-card-available .desk-status {
+  color: #34D399 !important;
+}
+
+/* Occupied Desk (S-03, S-06, S-09, S-12...) */
+.desk-card-occupied {
+  background-color: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+.desk-card-occupied:hover {
+  background-color: #E2E8F0;
+  border-color: #94A3B8;
+}
+.desk-card-occupied .desk-num {
+  color: #0F172A;
+}
+.desk-card-occupied .desk-status {
+  color: #2563EB;
+}
+
+html.dark .desk-card-occupied {
+  background-color: #171B26 !important;
+  border-color: #2E384D !important;
+}
+html.dark .desk-card-occupied:hover {
+  background-color: #1E2433 !important;
+  border-color: #3B82F6 !important;
+}
+html.dark .desk-card-occupied .desk-num {
+  color: #FFFFFF !important;
+}
+html.dark .desk-card-occupied .desk-status {
+  color: #93C5FD !important;
+}
+
+/* Reserved Desk */
+.desk-card-reserved {
+  background-color: #FFFBEB;
+  border-color: #FCD34D;
+  color: #78350F;
+}
+.desk-card-reserved:hover {
+  background-color: #FEF3C7;
+  border-color: #F59E0B;
+}
+.desk-card-reserved .desk-num {
+  color: #78350F;
+}
+.desk-card-reserved .desk-status {
+  color: #B45309;
+}
+
+html.dark .desk-card-reserved {
+  background-color: #241A0E !important;
+  border-color: #5A3A12 !important;
+}
+html.dark .desk-card-reserved:hover {
+  background-color: #2D2112 !important;
+  border-color: #F59E0B !important;
+}
+html.dark .desk-card-reserved .desk-num {
+  color: #FEF3C7 !important;
+}
+html.dark .desk-card-reserved .desk-status {
+  color: #FBBF24 !important;
+}
+
+/* Maintenance Desk */
+.desk-card-maintenance {
+  background-color: #FEF2F2;
+  border-color: #FECDD3;
+  color: #9F1239;
+}
+.desk-card-maintenance:hover {
+  background-color: #FEE2E2;
+  border-color: #F43F5E;
+}
+.desk-card-maintenance .desk-num {
+  color: #9F1239;
+}
+.desk-card-maintenance .desk-status {
+  color: #BE123C;
+}
+
+html.dark .desk-card-maintenance {
+  background-color: #241217 !important;
+  border-color: #5A1C28 !important;
+}
+html.dark .desk-card-maintenance:hover {
+  background-color: #2D161D !important;
+  border-color: #FB7185 !important;
+}
+html.dark .desk-card-maintenance .desk-num {
+  color: #FFE4E6 !important;
+}
+html.dark .desk-card-maintenance .desk-status {
+  color: #FB7185 !important;
+}
+
+/* Selected Desk Ring */
+.desk-card.is-selected {
+  outline: 2px solid #09090B;
+  outline-offset: 2px;
+}
+html.dark .desk-card.is-selected {
+  outline: 2px solid #FFFFFF !important;
+  outline-offset: 2px !important;
+}

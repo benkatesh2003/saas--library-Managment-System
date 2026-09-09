@@ -115,7 +115,7 @@ export function HeroSection({ onOpenDemoModal }) {
                     </div>
                     <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-400">
                       <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Vacant</span>
-                      <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-neutral-400" /> Occupied</span>
+                      <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> Occupied</span>
                       <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Reserved</span>
                     </div>
                   </div>
@@ -127,14 +127,14 @@ export function HeroSection({ onOpenDemoModal }) {
                       const isOcc = num % 3 === 0;
                       const isRes = num === 7 || num === 14;
                       const colorClass = isOcc
-                        ? 'bg-neutral-800 text-neutral-400 border border-neutral-700'
+                        ? 'bg-[#171B26] text-blue-300 border border-[#2E384D] font-bold'
                         : (isRes
-                          ? 'bg-amber-950/60 text-amber-300 border border-amber-800/80'
-                          : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/80');
+                          ? 'bg-amber-950/60 text-amber-300 border border-amber-800/80 font-bold'
+                          : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/80 font-bold');
                       return (
                         <div
                           key={idx}
-                          className={`h-7 rounded flex items-center justify-center font-mono text-[9px] font-medium transition-all ${colorClass}`}
+                          className={`h-7 rounded flex items-center justify-center font-mono text-[9px] font-bold transition-all ${colorClass}`}
                           title={`Seat S-${num < 10 ? '0' + num : num}`}
                         >
                           S{num}
@@ -166,7 +166,7 @@ export function HeroSection({ onOpenDemoModal }) {
                           </div>
                           <div>
                             <div className="font-medium text-neutral-200 text-xs">{item.name}</div>
-                            <div className="text-[10px] text-neutral-500 font-mono">{item.seat} • {item.shift}</div>
+                            <div className="text-[10px] text-neutral-400 font-mono font-medium">{item.seat} • {item.shift}</div>
                           </div>
                         </div>
                         <div className="text-right">

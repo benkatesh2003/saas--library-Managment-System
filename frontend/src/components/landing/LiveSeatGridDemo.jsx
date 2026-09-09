@@ -66,16 +66,16 @@ export function LiveSeatGridDemo() {
 
             <div className="flex items-center gap-4 text-xs">
               <div className="flex items-center gap-1.5 font-medium text-neutral-700">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>Available: <strong className="font-mono">{availableCount}</strong></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span>Available: <strong className="font-mono text-neutral-900">{availableCount}</strong></span>
               </div>
               <div className="flex items-center gap-1.5 font-medium text-neutral-700">
-                <span className="w-2 h-2 rounded-full bg-neutral-400" />
-                <span>Occupied: <strong className="font-mono">{occupiedCount}</strong></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                <span>Occupied: <strong className="font-mono text-neutral-900">{occupiedCount}</strong></span>
               </div>
               <div className="flex items-center gap-1.5 font-medium text-neutral-700">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span>Reserved: <strong className="font-mono">{reservedCount}</strong></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span>Reserved: <strong className="font-mono text-neutral-900">{reservedCount}</strong></span>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export function LiveSeatGridDemo() {
           <div className="pt-5">
             <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-3 flex items-center justify-between">
               <span>Main Study Hall (40 Desks) • Click any desk to inspect</span>
-              <span className="text-neutral-600 font-medium">Tip: Click S-03 or S-06</span>
+              <span className="text-neutral-500 font-medium font-mono">Tip: Click S-03 or S-06</span>
             </div>
 
             <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
@@ -92,25 +92,23 @@ export function LiveSeatGridDemo() {
                 const status = seat.shiftOccupancy?.[selectedShiftId] || "available";
                 const isSelected = selectedSeat?._id === seat._id;
 
-                let colorClasses = "bg-white text-neutral-800 border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50";
+                let deskClass = "desk-card-available";
                 if (status === "occupied") {
-                  colorClasses = "bg-neutral-200/70 text-neutral-600 border-neutral-300 hover:bg-neutral-200";
+                  deskClass = "desk-card-occupied";
                 } else if (status === "reserved") {
-                  colorClasses = "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100";
-                }
-
-                if (isSelected) {
-                  colorClasses += " ring-2 ring-neutral-900 ring-offset-2";
+                  deskClass = "desk-card-reserved";
                 }
 
                 return (
                   <button
                     key={seat._id}
                     onClick={() => setSelectedSeat(seat)}
-                    className={`h-12 rounded-md border flex flex-col items-center justify-center p-1 transition-colors text-center cursor-pointer shadow-2xs ${colorClasses}`}
+                    className={`h-12 rounded-md border flex flex-col items-center justify-center p-1 transition-colors text-center cursor-pointer shadow-2xs desk-card ${deskClass} ${
+                      isSelected ? "is-selected" : ""
+                    }`}
                   >
-                    <span className="text-xs font-mono font-semibold">{seat.seatNumber}</span>
-                    <span className="text-[9px] font-medium capitalize mt-0.5 opacity-80">{status}</span>
+                    <span className="text-xs font-mono font-bold desk-num">{seat.seatNumber}</span>
+                    <span className="text-[9px] font-semibold capitalize mt-0.5 desk-status">{status}</span>
                   </button>
                 );
               })}
@@ -128,7 +126,13 @@ export function LiveSeatGridDemo() {
                   <div>
                     <div className="font-semibold text-neutral-900 text-xs sm:text-sm flex items-center gap-2">
                       <span>Desk {selectedSeat.seatNumber} • Floor {selectedSeat.floor}</span>
-                      <span className="text-[11px] font-medium font-mono px-2 py-0.5 rounded capitalize bg-neutral-100 text-neutral-700 border border-neutral-200">
+                      <span className={`text-[11px] font-semibold font-mono px-2 py-0.5 rounded border capitalize ${
+                        (selectedSeat.shiftOccupancy?.[selectedShiftId] || 'available') === 'occupied'
+                          ? 'bg-blue-50 text-blue-700 border-blue-200'
+                          : (selectedSeat.shiftOccupancy?.[selectedShiftId] || 'available') === 'reserved'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      }`}>
                         {selectedSeat.shiftOccupancy?.[selectedShiftId] || 'available'} in {currentShift.name}
                       </span>
                     </div>
