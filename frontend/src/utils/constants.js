@@ -4,8 +4,8 @@
 
 export const APP_NAME = "Library Sathi";
 export const TAGLINE = "Smart Library & Co-Working Space Management Software in India";
-export const SUPPORT_EMAIL = "librarysathi07@gmail.com";
-export const SUPPORT_PHONE = "+91 98765 43210";
+export const SUPPORT_EMAIL = "bn933970@gmail.com";
+export const SUPPORT_PHONE = "+91 6205511342";
 
 /**
  * UNVERIFIED INTEGRATIONS NOTICE
